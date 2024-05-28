@@ -108,7 +108,7 @@ final class ParleyMessageView: UIView {
     @IBOutlet weak var buttonsBottomLayoutConstraint: NSLayoutConstraint!
     
     // Image
-    private let messageRepository: MessageRepository = Parley.shared.messageRepository
+    private let messageRepository: MessageRepositoryProtocol = Parley.shared.messageRepository
     private let imageLoader: ImageLoader = Parley.shared.imageLoader
     
     // Helpers

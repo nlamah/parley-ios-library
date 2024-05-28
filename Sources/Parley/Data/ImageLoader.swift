@@ -1,22 +1,26 @@
 import Foundation
 
-actor ImageLoader {
-    
+protocol ImageLoaderProtocol {
+    func load(id: String) async throws -> ImageDisplayModel
+}
+
+actor ImageLoader: ImageLoaderProtocol {
+
     enum ImageLoaderError: Error {
         case unableToConvertImageData
         case deinitialized
     }
-    
+
     private let imageRepository: ImageRepository
     private var imageCache: [String: ImageDisplayModel]
     private var requests: [String: Task<ImageDisplayModel, Error>]
-    
+
     init(imageRepository: ImageRepository) {
         self.imageRepository = imageRepository
-        self.imageCache = [String: ImageDisplayModel]()
-        self.requests = [:]
+        imageCache = [String: ImageDisplayModel]()
+        requests = [:]
     }
-    
+
     func load(id: String) async throws -> ImageDisplayModel {
         if let cachedImage = imageCache[id] {
             return cachedImage
@@ -30,18 +34,18 @@ actor ImageLoader {
             return try await fetchFromRemote(id: id)
         }
     }
-    
+
     func reset() {
         imageCache.removeAll()
         clearRequests()
     }
 }
 
-private extension ImageLoader {
-    
-    func fetchFromRemote(id: String) async throws -> ImageDisplayModel {
+extension ImageLoader {
+
+    private func fetchFromRemote(id: String) async throws -> ImageDisplayModel {
         let request = requests[id] ?? makeRemoteImageFetchTask(id: id)
-        
+
         do {
             let image = try await request.value
             imageCache[id] = image
@@ -52,8 +56,8 @@ private extension ImageLoader {
             throw error
         }
     }
-    
-    func makeRemoteImageFetchTask(id: String) -> Task<ImageDisplayModel, Error> {
+
+    private func makeRemoteImageFetchTask(id: String) -> Task<ImageDisplayModel, Error> {
         let request = Task.detached { [weak self] in
             guard let self else { throw ImageLoaderError.deinitialized }
             let networkImage = try await imageRepository.getRemoteImage(for: id)
