@@ -197,12 +197,12 @@ public class ParleyView: UIView {
     // MARK: Views
     private func setupMessagesTableView() {
         let cellIdentifiers = [
-            "InfoTableViewCell",
-            "DateTableViewCell",
-            "LoadingTableViewCell",
-
-            "MessageTableViewCell",
-            "AgentTypingTableViewCell",
+            InfoTableViewCell.reuseIdentifier,
+            DateTableViewCell.reuseIdentifier,
+            LoadingTableViewCell.reuseIdentifier,
+            
+            MessageTableViewCell.reuseIdentifier,
+            AgentTypingTableViewCell.reuseIdentifier,
         ]
 
         for cellIdentifier in cellIdentifiers {
@@ -596,42 +596,36 @@ extension ParleyView: UITableViewDataSource {
 
         switch message.type {
         case .agent?:
-            let messageTableViewCell = tableView
-                .dequeueReusableCell(withIdentifier: "MessageTableViewCell") as! MessageTableViewCell
+            let messageTableViewCell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier) as! MessageTableViewCell
             messageTableViewCell.delegate = self
             messageTableViewCell.appearance = appearance.agentMessage
             messageTableViewCell.render(message)
 
             return messageTableViewCell
         case .date?:
-            let dateTableViewCell = tableView
-                .dequeueReusableCell(withIdentifier: "DateTableViewCell") as! DateTableViewCell
+            let dateTableViewCell = tableView.dequeueReusableCell(withIdentifier: DateTableViewCell.reuseIdentifier) as! DateTableViewCell
             dateTableViewCell.appearance = appearance.date
             dateTableViewCell.render(message)
 
             return dateTableViewCell
         case .info?:
-            let infoTableViewCell = tableView
-                .dequeueReusableCell(withIdentifier: "InfoTableViewCell") as! InfoTableViewCell
+            let infoTableViewCell = tableView.dequeueReusableCell(withIdentifier: InfoTableViewCell.reuseIdentifier) as! InfoTableViewCell
             infoTableViewCell.appearance = appearance.info
             infoTableViewCell.render(message)
 
             return infoTableViewCell
         case .loading?:
-            let loadingTableViewCell = tableView
-                .dequeueReusableCell(withIdentifier: "LoadingTableViewCell") as! LoadingTableViewCell
+            let loadingTableViewCell = tableView.dequeueReusableCell(withIdentifier: LoadingTableViewCell.reuseIdentifier) as! LoadingTableViewCell
             loadingTableViewCell.appearance = appearance.loading
 
             return loadingTableViewCell
         case .agentTyping?:
-            let agentTypingTableViewCell = tableView
-                .dequeueReusableCell(withIdentifier: "AgentTypingTableViewCell") as! AgentTypingTableViewCell
+            let agentTypingTableViewCell = tableView.dequeueReusableCell(withIdentifier: AgentTypingTableViewCell.reuseIdentifier) as! AgentTypingTableViewCell
             agentTypingTableViewCell.appearance = appearance.typingBalloon
 
             return agentTypingTableViewCell
         case .user?:
-            let messageTableViewCell = tableView
-                .dequeueReusableCell(withIdentifier: "MessageTableViewCell") as! MessageTableViewCell
+            let messageTableViewCell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier) as! MessageTableViewCell
             messageTableViewCell.delegate = self
             messageTableViewCell.appearance = appearance.userMessage
             messageTableViewCell.render(message)
