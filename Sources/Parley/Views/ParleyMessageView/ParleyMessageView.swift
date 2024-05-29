@@ -132,7 +132,7 @@ final class ParleyMessageView: UIView {
     private static let maximumImageWidth: CGFloat = 500
 
     // MARK: - View
-    init(imageLoader: ImageLoaderProtocol = Parley.shared.imageLoader) {
+    init(imageLoader: ImageLoaderProtocol) {
         super.init(frame: .zero)
 
         self.imageLoader = imageLoader
