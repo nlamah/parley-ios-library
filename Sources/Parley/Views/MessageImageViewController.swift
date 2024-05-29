@@ -11,7 +11,7 @@ final class MessageImageViewController: UIViewController {
     private let messageRepository: MessageRepositoryProtocol
     private let imageLoader: ImageLoaderProtocol
 
-    init(messageRepository: MessageRepositoryProtocol, imageLoader: ImageLoaderProtocol = Parley.shared.imageLoader) {
+    init(messageRepository: MessageRepositoryProtocol, imageLoader: ImageLoaderProtocol) {
         self.messageRepository = messageRepository
         self.imageLoader = imageLoader
 

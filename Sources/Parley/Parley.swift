@@ -7,12 +7,13 @@ protocol ParleyProtocol {
     var reachable: Bool { get }
     var alwaysPolling: Bool { get }
     var pushEnabled: Bool { get }
-    
+
     var messagesManager: MessagesManagerProtocol! { get }
     var messageRepository: MessageRepositoryProtocol! { get }
-    
+    var imageLoader: ImageLoader! { get }
+
     var delegate: ParleyDelegate? { get set }
-    
+
     func isCachingEnabled() -> Bool
     func send(_ message: Message, isNewMessage: Bool) async
     func send(_ text: String, silent: Bool)

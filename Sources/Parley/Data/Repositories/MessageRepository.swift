@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-protocol MessageRepositoryProtocol {
+protocol MessageRepositoryProtocol: AnyObject {
     func find(_ id: Int, onSuccess: @escaping (_ message: Message) -> (), onFailure: @escaping (_ error: Error) -> ())
 
     func findAll(
