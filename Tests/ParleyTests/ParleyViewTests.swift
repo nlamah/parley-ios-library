@@ -4,17 +4,19 @@ import XCTest
 @testable import Parley
 
 final class ParleyViewTests: XCTestCase {
-    private let secondsOfMinute: Int = 60
+    private let secondsOfMinute = 60
     func testParleyView() throws {
         let messagesManagerStub = MessagesManagerStub()
 
         messagesManagerStub.messages = [
+            Message.makeTestData(time: Date(timeIntSince1970: 1), type: .date),
             Message.makeTestData(
                 id: 1,
                 time: Date(timeIntSince1970: 1),
                 title: nil,
                 message: "This is my question.",
-                type: .user
+                type: .user,
+                agent: nil
             ),
             Message.makeTestData(
                 id: 2,
@@ -27,8 +29,10 @@ final class ParleyViewTests: XCTestCase {
                 id: 3,
                 time: Date(timeIntSince1970: 2 * secondsOfMinute),
                 title: nil,
-                message: "Thank you for your prompt reply ❤️",
-                type: .user
+                message: "Thank you for your **prompt** *reply* ❤️",
+                type: .user,
+                status: .pending,
+                agent: nil
             ),
             Message.makeTestData(
                 id: 3,
