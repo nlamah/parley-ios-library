@@ -11,28 +11,28 @@ final class ParleyViewTests: XCTestCase {
         messagesManagerStub.messages = [
             Message.makeTestData(
                 id: 1,
-                time: Date(timeIntSince1970: 0),
+                time: Date(timeIntSince1970: 1),
                 title: nil,
                 message: "This is my question.",
                 type: .user
             ),
             Message.makeTestData(
                 id: 2,
-                time: Date(timeIntSince1970: 1 * 60),
+                time: Date(timeIntSince1970: 2 * 60),
                 title: nil,
                 message: "We will look into that!",
                 type: .agent
             ),
             Message.makeTestData(
                 id: 3,
-                time: Date(timeIntSince1970: 2 * 60),
+                time: Date(timeIntSince1970: 3 * 60),
                 title: nil,
-                message: "Thank you for your prompt reply",
+                message: "Thank you for your prompt reply ❤️",
                 type: .user
             ),
             Message.makeTestData(
                 id: 3,
-                time: Date(timeIntSince1970: 3 * 60),
+                time: Date(timeIntSince1970: 4 * 60),
                 title: nil,
                 message: "Thank you for your prompt reply",
                 type: .agentTyping
