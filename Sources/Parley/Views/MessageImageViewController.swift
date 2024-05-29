@@ -35,13 +35,11 @@ final class MessageImageViewController: UIViewController {
 
         addDismissButton()
     }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        let widthScale = 1 / imageView.frame.width * scrollView.bounds.width
-        let heightScale = 1 / imageView.frame.height * scrollView.bounds.height
-
+    
+    private func updateScale() {
+        let widthScale = 1 / self.imageView.frame.width * self.scrollView.bounds.width
+        let heightScale = 1 / self.imageView.frame.height * self.scrollView.bounds.height
+        
         let minimumScale = min(widthScale, heightScale)
         if minimumScale < 1 {
             scrollView.minimumZoomScale = minimumScale
@@ -134,7 +132,7 @@ final class MessageImageViewController: UIViewController {
     private func display(image: UIImage) {
         imageView.image = image
         imageView.sizeToFit()
-        adjustContentInset()
+        updateScale()
         activityIndicatorView.stopAnimating()
     }
 
@@ -184,7 +182,7 @@ final class MessageImageViewController: UIViewController {
             right: horizontalInset
         )
     }
-
+    
     private func addDismissButton() {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
