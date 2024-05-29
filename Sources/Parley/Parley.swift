@@ -3,11 +3,15 @@ import Reachability
 import UIKit
 
 protocol ParleyProtocol {
-    var delegate: ParleyDelegate? { get set }
+    var state: Parley.State { get }
+    var reachable: Bool { get }
     var alwaysPolling: Bool { get }
+    var pushEnabled: Bool { get }
+    
     var messagesManager: MessagesManagerProtocol! { get }
     var messageRepository: MessageRepositoryProtocol! { get }
-    var pushEnabled: Bool { get }
+    
+    var delegate: ParleyDelegate? { get set }
     
     func isCachingEnabled() -> Bool
     func send(_ message: Message, isNewMessage: Bool) async
@@ -18,7 +22,7 @@ protocol ParleyProtocol {
 }
 
 public final class Parley: ParleyProtocol {
-    
+
     enum State {
         case unconfigured
         case configuring
@@ -37,7 +41,7 @@ public final class Parley: ParleyProtocol {
     private var isLoading = false
 
     private var reachability: Reachability?
-    private var reachable = false {
+    private(set) var reachable = false {
         didSet {
             if reachable {
                 delegate?.reachable()
@@ -74,19 +78,7 @@ public final class Parley: ParleyProtocol {
     private(set) var userAuthorization: String?
     private(set) var userAdditionalInformation: [String: String]?
 
-    weak var delegate: ParleyDelegate? {
-        didSet {
-            if delegate == nil { return }
-
-            delegate?.didChangeState(state)
-
-            if reachable {
-                delegate?.reachable()
-            } else {
-                delegate?.unreachable()
-            }
-        }
-    }
+    weak var delegate: ParleyDelegate?
 
     private(set) var agentIsTyping = false
     private var agentStopTypingTimer: Timer?

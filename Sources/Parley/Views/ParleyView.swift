@@ -54,7 +54,7 @@ public class ParleyView: UIView {
 
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet weak var statusLabel: UILabel!
-    
+
     private let notificationService: NotificationServiceProtocol
     private let messageRepository: MessageRepositoryProtocol
     private let messagesManager: MessagesManagerProtocol
@@ -126,6 +126,14 @@ public class ParleyView: UIView {
         addObservers()
 
         parley.delegate = self
+
+        didChangeState(parley.state)
+        
+        if parley.reachable {
+            reachable()
+        } else {
+            unreachable()
+        }
 
         setupPollingIfNecessary()
 
@@ -200,7 +208,7 @@ public class ParleyView: UIView {
             InfoTableViewCell.reuseIdentifier,
             DateTableViewCell.reuseIdentifier,
             LoadingTableViewCell.reuseIdentifier,
-            
+
             MessageTableViewCell.reuseIdentifier,
             AgentTypingTableViewCell.reuseIdentifier,
         ]
@@ -596,36 +604,45 @@ extension ParleyView: UITableViewDataSource {
 
         switch message.type {
         case .agent?:
-            let messageTableViewCell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier) as! MessageTableViewCell
+            let messageTableViewCell = tableView
+                .dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier) as! MessageTableViewCell
             messageTableViewCell.delegate = self
             messageTableViewCell.appearance = appearance.agentMessage
             messageTableViewCell.render(message)
 
             return messageTableViewCell
         case .date?:
-            let dateTableViewCell = tableView.dequeueReusableCell(withIdentifier: DateTableViewCell.reuseIdentifier) as! DateTableViewCell
+            let dateTableViewCell = tableView
+                .dequeueReusableCell(withIdentifier: DateTableViewCell.reuseIdentifier) as! DateTableViewCell
             dateTableViewCell.appearance = appearance.date
             dateTableViewCell.render(message)
 
             return dateTableViewCell
         case .info?:
-            let infoTableViewCell = tableView.dequeueReusableCell(withIdentifier: InfoTableViewCell.reuseIdentifier) as! InfoTableViewCell
+            let infoTableViewCell = tableView
+                .dequeueReusableCell(withIdentifier: InfoTableViewCell.reuseIdentifier) as! InfoTableViewCell
             infoTableViewCell.appearance = appearance.info
             infoTableViewCell.render(message)
 
             return infoTableViewCell
         case .loading?:
-            let loadingTableViewCell = tableView.dequeueReusableCell(withIdentifier: LoadingTableViewCell.reuseIdentifier) as! LoadingTableViewCell
+            let loadingTableViewCell = tableView
+                .dequeueReusableCell(withIdentifier: LoadingTableViewCell.reuseIdentifier) as! LoadingTableViewCell
             loadingTableViewCell.appearance = appearance.loading
 
             return loadingTableViewCell
         case .agentTyping?:
-            let agentTypingTableViewCell = tableView.dequeueReusableCell(withIdentifier: AgentTypingTableViewCell.reuseIdentifier) as! AgentTypingTableViewCell
+            let agentTypingTableViewCell = tableView
+                .dequeueReusableCell(
+                    withIdentifier: AgentTypingTableViewCell
+                        .reuseIdentifier
+                ) as! AgentTypingTableViewCell
             agentTypingTableViewCell.appearance = appearance.typingBalloon
 
             return agentTypingTableViewCell
         case .user?:
-            let messageTableViewCell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier) as! MessageTableViewCell
+            let messageTableViewCell = tableView
+                .dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier) as! MessageTableViewCell
             messageTableViewCell.delegate = self
             messageTableViewCell.appearance = appearance.userMessage
             messageTableViewCell.render(message)
