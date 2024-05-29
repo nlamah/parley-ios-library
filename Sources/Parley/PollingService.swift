@@ -21,10 +21,7 @@ final class PollingService: PollingServiceProtocol {
     private let messageRepository: MessageRepositoryProtocol
     private let messagesManager: MessagesManagerProtocol
 
-    init(
-        messageRepository: MessageRepositoryProtocol = Parley.shared.messageRepository,
-        messagesManager: MessagesManagerProtocol = Parley.shared.messagesManager
-    ) {
+    init(messageRepository: MessageRepositoryProtocol, messagesManager: MessagesManagerProtocol) {
         self.messageRepository = messageRepository
         self.messagesManager = messagesManager
     }

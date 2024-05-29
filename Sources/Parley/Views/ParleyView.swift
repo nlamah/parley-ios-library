@@ -57,7 +57,10 @@ public class ParleyView: UIView {
 
     private lazy var parley: ParleyProtocol = Parley.shared
     private lazy var notificationService: NotificationServiceProtocol = NotificationService()
-    private lazy var pollingService: PollingServiceProtocol = PollingService()
+    private lazy var pollingService: PollingServiceProtocol = PollingService(
+        messageRepository: parley.messageRepository,
+        messagesManager: parley.messagesManager
+    )
 
     private var observeNotificationsBounds: NSKeyValueObservation?
     private var observeSuggestionsBounds: NSKeyValueObservation?
