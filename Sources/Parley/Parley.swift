@@ -10,7 +10,7 @@ protocol ParleyProtocol {
 
     var messagesManager: MessagesManagerProtocol! { get }
     var messageRepository: MessageRepositoryProtocol! { get }
-    var imageLoader: ImageLoader! { get }
+    var imageLoader: ImageLoaderProtocol! { get }
 
     var delegate: ParleyDelegate? { get set }
 
@@ -65,7 +65,7 @@ public final class Parley: ParleyProtocol {
     private(set) var messagesManager: MessagesManagerProtocol!
     private(set) var imageDataSource: ParleyImageDataSource?
     private(set) var imageRepository: ImageRepository!
-    private(set) var imageLoader: ImageLoader!
+    private(set) var imageLoader: ImageLoaderProtocol!
     private(set) var messageDataSource: ParleyMessageDataSource?
     private(set) var keyValueDataSource: ParleyKeyValueDataSource?
 
