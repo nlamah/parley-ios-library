@@ -1,4 +1,5 @@
 import UIKit
+import UniformTypeIdentifiers
 
 public class ParleyView: UIView {
 
@@ -21,13 +22,13 @@ public class ParleyView: UIView {
     private weak var notificationsConstraintBottom: NSLayoutConstraint?
     @IBOutlet weak var pushDisabledNotificationView: ParleyNotificationView! {
         didSet {
-            pushDisabledNotificationView.text = "parley_push_disabled".localized
+            pushDisabledNotificationView.text = ParleyLocalizationKey.pushDisabled.localized
         }
     }
 
     @IBOutlet weak var offlineNotificationView: ParleyNotificationView! {
         didSet {
-            offlineNotificationView.text = "parley_notification_offline".localized
+            offlineNotificationView.text = ParleyLocalizationKey.notificationOffline.localized
         }
     }
 
@@ -45,7 +46,7 @@ public class ParleyView: UIView {
 
     @IBOutlet weak var composeView: ParleyComposeView! {
         didSet {
-            composeView.placeholder = "parley_type_message".localized
+            composeView.placeholder = ParleyLocalizationKey.typeMessage.localized
             composeView.maxCount = kParleyMessageMaxCount
 
             composeView.delegate = self
@@ -66,6 +67,8 @@ public class ParleyView: UIView {
     private var observeSuggestionsBounds: NSKeyValueObservation?
     private var isShowingKeyboardWithMessagesScrolledToBottom = false
     private var isAlreadyAtTop = false
+
+    private static let maximumImageSizeInMegabytes = 10
 
     public var appearance = ParleyViewAppearance() {
         didSet {
@@ -155,42 +158,12 @@ public class ParleyView: UIView {
         contentView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(contentView)
 
-        NSLayoutConstraint(
-            item: self,
-            attribute: .leading,
-            relatedBy: .equal,
-            toItem: contentView,
-            attribute: .leading,
-            multiplier: 1.0,
-            constant: 0
-        ).isActive = true
-        NSLayoutConstraint(
-            item: self,
-            attribute: .trailing,
-            relatedBy: .equal,
-            toItem: contentView,
-            attribute: .trailing,
-            multiplier: 1.0,
-            constant: 0
-        ).isActive = true
-        NSLayoutConstraint(
-            item: self,
-            attribute: .top,
-            relatedBy: .equal,
-            toItem: contentView,
-            attribute: .top,
-            multiplier: 1.0,
-            constant: 0
-        ).isActive = true
-        NSLayoutConstraint(
-            item: self,
-            attribute: .bottom,
-            relatedBy: .equal,
-            toItem: contentView,
-            attribute: .bottom,
-            multiplier: 1.0,
-            constant: 0
-        ).isActive = true
+        NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentView.topAnchor.constraint(equalTo: topAnchor),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
     }
 
     // MARK: Views
@@ -461,7 +434,7 @@ extension ParleyView: ParleyDelegate {
         delegate?.didSentMessage()
         UIAccessibility.post(
             notification: .announcement,
-            argument: "parley_voice_over_announcement_sent_message".localized
+            argument: ParleyLocalizationKey.voiceOverAnnouncementSentMessage.localized
         )
     }
 
@@ -503,7 +476,7 @@ extension ParleyView: ParleyDelegate {
             composeView.isHidden = true
             suggestionsView.isHidden = true
 
-            statusLabel.text = "parley_state_unconfigured".localized
+            statusLabel.text = ParleyLocalizationKey.stateUnconfigured.localized
             statusLabel.isHidden = false
 
             activityIndicatorView.isHidden = true
@@ -525,7 +498,7 @@ extension ParleyView: ParleyDelegate {
             composeView.isHidden = true
             suggestionsView.isHidden = true
 
-            statusLabel.text = "parley_state_failed".localized
+            statusLabel.text = ParleyLocalizationKey.stateFailed.localized
             statusLabel.isHidden = false
 
             activityIndicatorView.isHidden = true
@@ -740,15 +713,15 @@ extension ParleyView: UITableViewDelegate {
 extension ParleyView: ParleyComposeViewDelegate {
 
     func failedToSelectImage() {
-        let title = "parley_send_failed_title".localized
-        let message = "parley_send_failed_body_selecting_image".localized
+        let title = ParleyLocalizationKey.sendFailedTitle.localized
+        let message = ParleyLocalizationKey.sendFailedBodySelectingImage.localized
         presentInformationalAlert(title: title, message: message)
     }
 
     @MainActor
     private func presentInformationalAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okMessage = "parley_ok".localized
+        let okMessage = ParleyLocalizationKey.ok.localized
         alert.addAction(UIAlertAction(title: okMessage, style: .default))
         present(alert, animated: true)
     }
@@ -766,35 +739,69 @@ extension ParleyView: ParleyComposeViewDelegate {
     func send(image: UIImage, with data: Data, url: URL) {
         Task { @MainActor in
             guard let mediaModel = MediaModel(image: image, data: data, url: url) else {
-                let title = "parley_send_failed_title".localized
-                let message = "parley_send_failed_body_media_invalid".localized
-                presentInformationalAlert(title: title, message: message)
-                return
+                presentInvalidMediaAlert() ; return
             }
 
             guard !mediaModel.isLargerThan(size: 10) else {
-                let title = "parley_send_failed_title".localized
-                let message = "parley_send_failed_body_media_too_large".localized
+                let title = ParleyLocalizationKey.sendFailedTitle.localized
+                let message = ParleyLocalizationKey.sendFailedBodyMediaTooLarge.localized
                 presentInformationalAlert(title: title, message: message)
                 return
             }
 
             await parley.sendNewMessageWithMedia(mediaModel)
+
+            await send(media: mediaModel)
         }
+    }
+
+    @available(iOS 14.0, *)
+    func send(image: UIImage, data: Data, fileName: String, type: UTType) {
+        Task { @MainActor in
+            guard let mediaModel = MediaModel(image: image, data: data, fileName: fileName, type: type) else {
+                presentInvalidMediaAlert() ; return
+            }
+
+            await send(media: mediaModel)
+        }
+    }
+
+    @MainActor
+    private func send(media: MediaModel) async {
+        guard !media.isLargerThan(size: Self.maximumImageSizeInMegabytes) else {
+            presentImageToLargeAlert() ; return
+        }
+
+        await Parley.shared.sendNewMessageWithMedia(media)
+    }
+
+    @MainActor
+    private func presentInvalidMediaAlert() {
+        let title = ParleyLocalizationKey.sendFailedTitle.localized
+        let message = ParleyLocalizationKey.sendFailedBodyMediaInvalid.localized
+        presentInformationalAlert(title: title, message: message)
+    }
+
+    @MainActor
+    private func presentImageToLargeAlert() {
+        let title = ParleyLocalizationKey.sendFailedTitle.localized
+        let message = ParleyLocalizationKey.sendFailedBodyMediaTooLarge.localized
+        presentInformationalAlert(title: title, message: message)
     }
 }
 
 // MARK: MessageTableViewCellDelegate
 extension ParleyView: MessageTableViewCellDelegate {
 
-    func didSelectImage(from message: Message) {
+    func didSelectImage(messageMediaIdentifier: String) {
         let imageViewController = MessageImageViewController(
+            messageMediaIdentifier: messageMediaIdentifier,
             messageRepository: parley.messageRepository,
             imageLoader: parley.imageLoader
         )
+
         imageViewController.modalPresentationStyle = .overFullScreen
         imageViewController.modalTransitionStyle = .crossDissolve
-        imageViewController.message = message
 
         present(imageViewController, animated: true, completion: nil)
     }

@@ -68,6 +68,7 @@ public final class Parley: ParleyProtocol {
     private(set) var imageLoader: ImageLoaderProtocol!
     private(set) var messageDataSource: ParleyMessageDataSource?
     private(set) var keyValueDataSource: ParleyKeyValueDataSource?
+    private(set) var localizationManager: LocalizationManager = ParleyLocalizationManager()
 
     private(set) var alwaysPolling = false
     private(set) var pushToken: String? = nil
@@ -599,7 +600,7 @@ public final class Parley: ParleyProtocol {
         if agentReallyStartTyping {
             UIAccessibility.post(
                 notification: .announcement,
-                argument: "parley_voice_over_announcement_agent_typing".localized
+                argument: ParleyLocalizationKey.voiceOverAnnouncementAgentTyping.localized
             )
             delegate?.didStartTyping()
         }
@@ -636,12 +637,15 @@ extension Parley {
             let data = (userInfo["parley"] as? String)?.data(using: .utf8),
             let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
             let messageType = json["type"] as? String,
-            let object = json["object"] as? [String: Any] else { return false }
+            let object = json["object"] as? [String: Any] else
+        {
+            return false
+        }
 
         switch messageType {
-        case kParleyTypeMessage:
+        case MessageTypeEvent.message.rawValue:
             shared.handleMessage(object)
-        case kParleyTypeEvent:
+        case MessageTypeEvent.event.rawValue:
             shared.handleEvent(object["name"] as? String)
         default:
             break
@@ -780,6 +784,16 @@ extension Parley {
     }
 
     /**
+     Set a ``LocalizationManager`` to be able to provide more localizations than provided by the SDK.
+
+     - Parameters:
+       - localizationManager: Manager to return localization string from a key.
+     */
+    public static func setLocalizationManager(_ localizationManager: LocalizationManager) {
+        shared.localizationManager = localizationManager
+    }
+
+    /**
      Configure Parley Messaging with clearing the cache
 
      The configure method allows setting a unique device identifier. If none is provided (default), Parley will default to
@@ -847,6 +861,29 @@ extension Parley {
         })
 
         shared.clearChat()
+    }
+
+    /**
+     Resets all local user identifiers. Ensures that no user and chat data is left in memory.
+
+     Leaves the network, offline messaging and referrer settings as is, these can be altered via the corresponding methods.
+
+     - Parameters:
+       - completion: Called when all data is cleared
+
+     - Note: Requires calling the `configure()` method again to use Parley.
+     */
+    public static func purgeLocalMemory(completion: (() -> ())? = nil) {
+        Task {
+            await shared.imageLoader?.reset()
+        }
+
+        shared.userAuthorization = nil
+        shared.userAdditionalInformation = nil
+        shared.imageRepository?.reset()
+        shared.secret = nil
+        shared.clearChat()
+        completion?()
     }
 
     /**

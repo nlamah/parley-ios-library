@@ -121,7 +121,7 @@ final class PollingService: PollingServiceProtocol {
     @objc
     private func willEnterForeground() {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.timer?.invalidate()
             self.timer = nil
             self.setTimer(interval: self.timerInterval)

@@ -2,16 +2,16 @@ import UIKit
 
 final class MessageImageViewController: UIViewController {
 
-    private var scrollView = UIScrollView()
-    private var imageView = UIImageView()
-    private var activityIndicatorView = UIActivityIndicatorView()
+    private let scrollView = UIScrollView()
+    private let imageView = UIImageView()
+    private let activityIndicatorView = UIActivityIndicatorView()
 
-    var message: Message?
-
+    private let messageMediaIdentifier: String
     private let messageRepository: MessageRepositoryProtocol
     private let imageLoader: ImageLoaderProtocol
 
-    init(messageRepository: MessageRepositoryProtocol, imageLoader: ImageLoaderProtocol) {
+    init(messageMediaIdentifier: String, messageRepository: MessageRepositoryProtocol, imageLoader: ImageLoaderProtocol) {
+        self.messageMediaIdentifier = messageMediaIdentifier
         self.messageRepository = messageRepository
         self.imageLoader = imageLoader
 
@@ -28,26 +28,17 @@ final class MessageImageViewController: UIViewController {
 
         setupView()
         setupScrollView()
-        setupImageView()
         setupActivityIndicatorView()
+        setupImageView()
 
         addSwipeToDismissPanGestureRecognizer()
-
         addDismissButton()
     }
-    
-    private func updateScale() {
-        let widthScale = 1 / self.imageView.frame.width * self.scrollView.bounds.width
-        let heightScale = 1 / self.imageView.frame.height * self.scrollView.bounds.height
-        
-        let minimumScale = min(widthScale, heightScale)
-        if minimumScale < 1 {
-            scrollView.minimumZoomScale = minimumScale
-            scrollView.zoomScale = minimumScale
-        }
-        scrollView.maximumZoomScale = minimumScale * 3
 
-        adjustContentInset()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        loadImage(id: messageMediaIdentifier)
     }
 
     private func setupView() {
@@ -55,85 +46,68 @@ final class MessageImageViewController: UIViewController {
     }
 
     private func setupScrollView() {
+        view.addSubview(scrollView)
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
 
         scrollView.delegate = self
+
         scrollView.translatesAutoresizingMaskIntoConstraints = false
 
-        view.addSubview(scrollView)
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+
+    private func setupActivityIndicatorView() {
+        view.addSubview(activityIndicatorView)
+
+        activityIndicatorView.style = .medium
+        activityIndicatorView.color = .white
+        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            NSLayoutConstraint(
-                item: scrollView,
-                attribute: .top,
-                relatedBy: .equal,
-                toItem: view,
-                attribute: .top,
-                multiplier: 1,
-                constant: 0
-            ),
-            NSLayoutConstraint(
-                item: scrollView,
-                attribute: .trailing,
-                relatedBy: .equal,
-                toItem: view,
-                attribute: .trailing,
-                multiplier: 1,
-                constant: 0
-            ),
-            NSLayoutConstraint(
-                item: scrollView,
-                attribute: .bottom,
-                relatedBy: .equal,
-                toItem: view,
-                attribute: .bottom,
-                multiplier: 1,
-                constant: 0
-            ),
-            NSLayoutConstraint(
-                item: scrollView,
-                attribute: .leading,
-                relatedBy: .equal,
-                toItem: view,
-                attribute: .leading,
-                multiplier: 1,
-                constant: 0
-            ),
+            activityIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicatorView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
     }
 
     private func setupImageView() {
         scrollView.addSubview(imageView)
-        guard let mediaId = message?.media?.id else {
-            dismiss(animated: true, completion: nil) ; return
-        }
-
-        displayImageLoading()
-        loadImage(id: mediaId)
     }
 
-    private func displayImageLoading() {
+    private func startImageLoading() {
         activityIndicatorView.startAnimating()
     }
 
+    @MainActor
+    private func stopImageLoading() {
+        activityIndicatorView.stopAnimating()
+    }
+
     private func loadImage(id: String) {
+        startImageLoading()
+
         Task {
             do {
                 let image = try await imageLoader.load(id: id)
+
                 display(image: image.image)
             } catch {
                 displayFailedLoadingImage()
             }
+
+            stopImageLoading()
         }
     }
 
     @MainActor
     private func display(image: UIImage) {
         imageView.image = image
-        imageView.sizeToFit()
         updateScale()
-        activityIndicatorView.stopAnimating()
     }
 
     @MainActor
@@ -141,30 +115,20 @@ final class MessageImageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    private func setupActivityIndicatorView() {
-        activityIndicatorView.style = .medium
-        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+    private func updateScale() {
+        imageView.sizeToFit()
 
-        view.addSubview(activityIndicatorView)
+        let widthScale = 1 / imageView.frame.width * scrollView.bounds.width
+        let heightScale = 1 / imageView.frame.height * scrollView.bounds.height
 
-        NSLayoutConstraint(
-            item: activityIndicatorView,
-            attribute: .centerX,
-            relatedBy: .equal,
-            toItem: view,
-            attribute: .centerX,
-            multiplier: 1,
-            constant: 0
-        ).isActive = true
-        NSLayoutConstraint(
-            item: activityIndicatorView,
-            attribute: .centerY,
-            relatedBy: .equal,
-            toItem: view,
-            attribute: .centerY,
-            multiplier: 1,
-            constant: 0
-        ).isActive = true
+        let minimumScale = min(widthScale, heightScale)
+        if minimumScale < 1 {
+            scrollView.minimumZoomScale = minimumScale
+            scrollView.zoomScale = minimumScale
+        }
+
+        scrollView.maximumZoomScale = minimumScale * 3
+        adjustContentInset()
     }
 
     private func adjustContentInset() {
@@ -182,7 +146,7 @@ final class MessageImageViewController: UIViewController {
             right: horizontalInset
         )
     }
-    
+
     private func addDismissButton() {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -190,7 +154,7 @@ final class MessageImageViewController: UIViewController {
         button.setImage(image, for: .normal)
         button.tintColor = .white
         button.isAccessibilityElement = true
-        button.accessibilityLabel = "parley_close".localized
+        button.accessibilityLabel = ParleyLocalizationKey.close.localized
 
         view.addSubview(button)
 
@@ -199,7 +163,7 @@ final class MessageImageViewController: UIViewController {
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
         ])
 
-        button.addTarget(self, action: #selector(dismissTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(MessageImageViewController.dismissTapped), for: .touchUpInside)
     }
 
     @objc
@@ -209,14 +173,17 @@ final class MessageImageViewController: UIViewController {
 
     // MARK: Swipe to dismiss
     private func addSwipeToDismissPanGestureRecognizer() {
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleSwipeToDismiss))
+        let panGestureRecognizer = UIPanGestureRecognizer(
+            target: self,
+            action: #selector(MessageImageViewController.handleSwipeToDismiss)
+        )
         panGestureRecognizer.cancelsTouchesInView = false
 
         view.addGestureRecognizer(panGestureRecognizer)
     }
 
     @objc
-    func handleSwipeToDismiss(_ panGestureRecognizer: UIPanGestureRecognizer) {
+    private func handleSwipeToDismiss(_ panGestureRecognizer: UIPanGestureRecognizer) {
         let translation = panGestureRecognizer.translation(in: view)
         let translationY = translation.y
         let translationYAbsolute = abs(translationY)
