@@ -1,14 +1,17 @@
 @testable import Parley
 
 final class ParleyStub: ParleyProtocol {
+    
     init(
         messagesManager: MessagesManagerProtocol,
         messageRepository: MessageRepositoryProtocol,
-        imageLoader: ImageLoaderProtocol
+        imageLoader: ImageLoaderProtocol,
+        localizationManager: LocalizationManager
     ) {
         self.messagesManager = messagesManager
         self.messageRepository = messageRepository
         self.imageLoader = imageLoader
+        self.localizationManager = localizationManager
     }
 
     var state: Parley.State = .configured
@@ -19,6 +22,7 @@ final class ParleyStub: ParleyProtocol {
     var messagesManager: MessagesManagerProtocol!
     var messageRepository: MessageRepositoryProtocol!
     var imageLoader: ImageLoaderProtocol!
+    var localizationManager: LocalizationManager
 
     var delegate: ParleyDelegate?
 
@@ -31,4 +35,8 @@ final class ParleyStub: ParleyProtocol {
     func userStartTyping() {}
     func loadMoreMessages(_ lastMessageId: Int) {}
     func sendNewMessageWithMedia(_ media: MediaModel) async {}
+    
+    func setLocalizationManager(_ localizationManager: LocalizationManager) {
+        self.localizationManager = localizationManager
+    }
 }

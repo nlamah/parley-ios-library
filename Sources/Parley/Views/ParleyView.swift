@@ -772,7 +772,7 @@ extension ParleyView: ParleyComposeViewDelegate {
             presentImageToLargeAlert() ; return
         }
 
-        await Parley.shared.sendNewMessageWithMedia(media)
+        await parley.sendNewMessageWithMedia(media)
     }
 
     @MainActor
