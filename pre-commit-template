@@ -7,9 +7,10 @@
 # Make the file executable
 # $ chmod +x .git/hooks/pre-commit
 
+SWIFTLINT="${which swiftlint}"
 
 # Run SwiftLint
-swiftlint
+$SWIFTLINT
 
 # Check the exit code of SwiftLint
 if [ $? -ne 0 ]; then

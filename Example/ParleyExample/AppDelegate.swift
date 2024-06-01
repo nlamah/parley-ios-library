@@ -9,7 +9,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(
-        _ application: UIApplication,
+        _ application : UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?
     ) -> Bool {
         // Start: Configuring Firebase Cloud Messaging
