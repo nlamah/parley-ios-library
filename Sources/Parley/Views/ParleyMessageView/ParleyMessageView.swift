@@ -244,8 +244,8 @@ final class ParleyMessageView: UIView {
 
     private func renderMetaStatus() {
         if message.type == .user {
-            imageMetaStatusImageView.isHidden = false
-            statusImageView.isHidden = false
+            imageMetaStatusImageView.isHidden = displayMeta != .image
+            statusImageView.isHidden = displayMeta != .message
 
             switch message.status {
             case .failed:
@@ -387,15 +387,17 @@ final class ParleyMessageView: UIView {
 
     // Gradient
     private func renderGradients() {
-        layoutIfNeeded()
-        imageImageView.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        // Async to render gradients on next frame, else scrolling images that are loading might not get the correct gradient applied.
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            imageImageView.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+            if displayName == .image {
+                addImageNameGradient()
+            }
 
-        if displayName == .image {
-            addImageNameGradient()
-        }
-
-        if displayMeta == .image {
-            addImageMetaGradient()
+            if displayMeta == .image {
+                addImageMetaGradient()
+            }
         }
     }
 

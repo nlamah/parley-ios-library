@@ -748,8 +748,6 @@ extension ParleyView: ParleyComposeViewDelegate {
                 return
             }
 
-            await parley.sendNewMessageWithMedia(mediaModel)
-
             await send(media: mediaModel)
         }
     }
