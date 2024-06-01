@@ -197,7 +197,10 @@ public final class Parley: ParleyProtocol {
         configure()
     }
 
-    private func configure(onSuccess: (() -> Void)? = nil, onFailure: ((_ code: Int, _ message: String) -> Void)? = nil) {
+    private func configure(
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil
+    ) {
         debugPrint("Parley.\(#function)")
 
         guard !isLoading else { return }
@@ -285,7 +288,10 @@ public final class Parley: ParleyProtocol {
         }
     }
 
-    private func reconfigure(onSuccess: (() -> Void)? = nil, onFailure: ((_ code: Int, _ message: String) -> Void)? = nil) {
+    private func reconfigure(
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil
+    ) {
         clearChat()
         configure(onSuccess: onSuccess, onFailure: onFailure)
     }
@@ -842,7 +848,10 @@ extension Parley {
 
      - Note: Requires calling the `configure()` method again to use Parley.
      */
-    public static func reset(onSuccess: (() -> Void)? = nil, onFailure: ((_ code: Int, _ message: String) -> Void)? = nil) {
+    public static func reset(
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil
+    ) {
         Task {
             await shared.imageLoader?.reset()
         }

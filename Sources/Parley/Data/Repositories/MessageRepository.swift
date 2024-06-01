@@ -2,7 +2,11 @@ import Foundation
 import UIKit
 
 protocol MessageRepositoryProtocol: AnyObject {
-    func find(_ id: Int, onSuccess: @escaping (_ message: Message) -> Void, onFailure: @escaping (_ error: Error) -> Void)
+    func find(
+        _ id: Int,
+        onSuccess: @escaping (_ message: Message) -> Void,
+        onFailure: @escaping (_ error: Error) -> Void
+    )
 
     func findAll(
         onSuccess: @escaping (_ messageCollection: MessageCollection) -> Void,
@@ -32,7 +36,11 @@ final class MessageRepository: MessageRepositoryProtocol {
         self.messageRemoteService = messageRemoteService
     }
 
-    func find(_ id: Int, onSuccess: @escaping (_ message: Message) -> Void, onFailure: @escaping (_ error: Error) -> Void) {
+    func find(
+        _ id: Int,
+        onSuccess: @escaping (_ message: Message) -> Void,
+        onFailure: @escaping (_ error: Error) -> Void
+    ) {
         messageRemoteService.find(id, onSuccess: onSuccess, onFailure: onFailure)
     }
 
