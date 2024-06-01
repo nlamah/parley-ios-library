@@ -71,10 +71,10 @@ final class KeyboardAccessoryView: UIView {
     override func observeValue(
         forKeyPath keyPath: String?,
         of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
+        change: [NSKeyValueChangeKey: Any]?,
         context: UnsafeMutableRawPointer?
     ) {
-        if let theChange = change as [NSKeyValueChangeKey : AnyObject]? {
+        if let theChange = change as [NSKeyValueChangeKey: AnyObject]? {
             if theChange[NSKeyValueChangeKey.newKey] != nil {
                 if delegate != nil && superview?.frame != nil {
                     delegate?.keyboardFrameChanged((superview?.frame)!)

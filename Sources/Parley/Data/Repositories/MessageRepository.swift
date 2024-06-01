@@ -32,29 +32,29 @@ final class MessageRepository: MessageRepositoryProtocol {
         self.messageRemoteService = messageRemoteService
     }
 
-    func find(_ id: Int, onSuccess: @escaping (_ message: Message) -> (), onFailure: @escaping (_ error: Error) -> ()) {
+    func find(_ id: Int, onSuccess: @escaping (_ message: Message) -> Void, onFailure: @escaping (_ error: Error) -> Void) {
         messageRemoteService.find(id, onSuccess: onSuccess, onFailure: onFailure)
     }
 
     func findAll(
-        onSuccess: @escaping (_ messageCollection: MessageCollection) -> (),
-        onFailure: @escaping (_ error: Error) -> ()
+        onSuccess: @escaping (_ messageCollection: MessageCollection) -> Void,
+        onFailure: @escaping (_ error: Error) -> Void
     ) {
         messageRemoteService.findAll(onSuccess: onSuccess, onFailure: onFailure)
     }
 
     func findBefore(
         _ id: Int,
-        onSuccess: @escaping (_ messageCollection: MessageCollection) -> (),
-        onFailure: @escaping (_ error: Error) -> ()
+        onSuccess: @escaping (_ messageCollection: MessageCollection) -> Void,
+        onFailure: @escaping (_ error: Error) -> Void
     ) {
         messageRemoteService.findBefore(id, onSuccess: onSuccess, onFailure: onFailure)
     }
 
     func findAfter(
         _ id: Int,
-        onSuccess: @escaping (_ messageCollection: MessageCollection) -> (),
-        onFailure: @escaping (_ error: Error) -> ()
+        onSuccess: @escaping (_ messageCollection: MessageCollection) -> Void,
+        onFailure: @escaping (_ error: Error) -> Void
     ) {
         messageRemoteService.findAfter(id, onSuccess: onSuccess, onFailure: onFailure)
     }

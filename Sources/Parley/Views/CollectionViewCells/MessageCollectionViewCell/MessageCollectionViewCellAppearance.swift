@@ -29,7 +29,7 @@ public class MessageCollectionViewCellAppearance: ParleyMessageViewAppearance {
 
         appearance.balloonImage = UIImage(named: "user_balloon_carrousel", in: .module, compatibleWith: nil)?
             .resizableImage(withCapInsets: edgeInsets)
-        appearance.balloonTintColor = UIColor(red:0.29, green:0.37, blue:0.51, alpha:1.0)
+        appearance.balloonTintColor = UIColor(red: 0.29, green: 0.37, blue: 0.51, alpha: 1.0)
 
         appearance.balloonContentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 2)
         appearance.balloonContentTextInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)

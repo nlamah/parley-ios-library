@@ -4,7 +4,7 @@ final class MessagesTableView: UITableView {
 
     private(set) var isAtBottom = false
 
-    override var contentSize:CGSize {
+    override var contentSize: CGSize {
         didSet {
             checkIsAtBottom()
         }

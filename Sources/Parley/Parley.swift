@@ -171,8 +171,8 @@ public final class Parley: ParleyProtocol {
     private func configure(
         _ secret: String,
         uniqueDeviceIdentifier: String?,
-        onSuccess: (() -> ())? = nil,
-        onFailure: ((_ code: Int, _ message: String) -> ())? = nil,
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil,
         clearCache: Bool = false
     ) {
         debugPrint("Parley.\(#function)")
@@ -197,7 +197,7 @@ public final class Parley: ParleyProtocol {
         configure()
     }
 
-    private func configure(onSuccess: (() -> ())? = nil, onFailure: ((_ code: Int, _ message: String) -> ())? = nil) {
+    private func configure(onSuccess: (() -> Void)? = nil, onFailure: ((_ code: Int, _ message: String) -> Void)? = nil) {
         debugPrint("Parley.\(#function)")
 
         guard !isLoading else { return }
@@ -222,7 +222,7 @@ public final class Parley: ParleyProtocol {
             }
         }
 
-        let onFailure: (_ error: Error) -> () = { [weak self] error in
+        let onFailure: (_ error: Error) -> Void = { [weak self] error in
             guard let self else { return }
             isLoading = false
 
@@ -239,7 +239,7 @@ public final class Parley: ParleyProtocol {
             device: makeDeviceData(),
             onSuccess: { [weak self] _ in
                 guard let self else { return }
-                let onSecondSuccess: () -> () = { [weak self] in
+                let onSecondSuccess: () -> Void = { [weak self] in
                     guard let self else { return }
                     delegate?.didReceiveMessages()
 
@@ -285,7 +285,7 @@ public final class Parley: ParleyProtocol {
         }
     }
 
-    private func reconfigure(onSuccess: (() -> ())? = nil, onFailure: ((_ code: Int, _ message: String) -> ())? = nil) {
+    private func reconfigure(onSuccess: (() -> Void)? = nil, onFailure: ((_ code: Int, _ message: String) -> Void)? = nil) {
         clearChat()
         configure(onSuccess: onSuccess, onFailure: onFailure)
     }
@@ -333,8 +333,8 @@ public final class Parley: ParleyProtocol {
     // MARK: Devices
 
     private func registerDevice(
-        onSuccess: (() -> ())? = nil,
-        onFailure: ((_ code: Int, _ message: String) -> ())? = nil
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil
     ) {
         if state == .configuring || state == .configured {
             deviceRepository?.register(device: makeDeviceData(), onSuccess: { _ in
@@ -703,8 +703,8 @@ extension Parley {
     public static func setPushToken(
         _ pushToken: String,
         pushType: Device.PushType = .fcm,
-        onSuccess: (() -> ())? = nil,
-        onFailure: ((_ code: Int, _ message: String) -> ())? = nil
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil
     ) {
         if shared.pushToken == pushToken { return }
 
@@ -724,8 +724,8 @@ extension Parley {
      */
     public static func setPushEnabled(
         _ enabled: Bool,
-        onSuccess: (() -> ())? = nil,
-        onFailure: ((_ code: Int, _ message: String) -> ())? = nil
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil
     ) {
         guard shared.pushEnabled != enabled else { return }
 
@@ -747,9 +747,9 @@ extension Parley {
      */
     public static func setUserInformation(
         _ authorization: String,
-        additionalInformation: [String : String]? = nil,
-        onSuccess: (() -> ())? = nil,
-        onFailure: ((_ code: Int, _ message: String) -> ())? = nil
+        additionalInformation: [String: String]? = nil,
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil
     ) {
         shared.userAuthorization = authorization
         shared.userAdditionalInformation = additionalInformation
@@ -769,8 +769,8 @@ extension Parley {
        - onFailure: Execution block when user information is can not be cleared. This block takes an Int which represents the HTTP Status Code and a String describing what went wrong.
      */
     public static func clearUserInformation(
-        onSuccess: (() -> ())? = nil,
-        onFailure: ((_ code: Int, _ message: String) -> ())? = nil
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil
     ) {
         shared.userAuthorization = nil
         shared.userAdditionalInformation = nil
@@ -817,8 +817,8 @@ extension Parley {
         uniqueDeviceIdentifier: String? = nil,
         networkConfig: ParleyNetworkConfig,
         networkSession: ParleyNetworkSession,
-        onSuccess: (() -> ())? = nil,
-        onFailure: ((_ code: Int, _ message: String) -> ())? = nil
+        onSuccess: (() -> Void)? = nil,
+        onFailure: ((_ code: Int, _ message: String) -> Void)? = nil
     ) {
         shared.initialize(networkConfig: networkConfig, networkSession: networkSession)
 
@@ -842,7 +842,7 @@ extension Parley {
 
      - Note: Requires calling the `configure()` method again to use Parley.
      */
-    public static func reset(onSuccess: (() -> ())? = nil, onFailure: ((_ code: Int, _ message: String) -> ())? = nil) {
+    public static func reset(onSuccess: (() -> Void)? = nil, onFailure: ((_ code: Int, _ message: String) -> Void)? = nil) {
         Task {
             await shared.imageLoader?.reset()
         }
@@ -872,7 +872,7 @@ extension Parley {
 
      - Note: Requires calling the `configure()` method again to use Parley.
      */
-    public static func purgeLocalMemory(completion: (() -> ())? = nil) {
+    public static func purgeLocalMemory(completion: (() -> Void)? = nil) {
         Task {
             await shared.imageLoader?.reset()
         }

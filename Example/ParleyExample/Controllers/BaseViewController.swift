@@ -17,7 +17,7 @@ class BaseViewController: UIViewController {
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor(named: "primaryColor")
         appearance.titleTextAttributes = titleAttributes
-        navigationController?.navigationBar.standardAppearance = appearance;
+        navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar
             .standardAppearance
     }
