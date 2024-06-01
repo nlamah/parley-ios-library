@@ -47,9 +47,9 @@ final class MessagesManager: MessagesManagerProtocol {
         originalMessages.reduce([Message]()) { partialResult, message in
             switch message.status {
             case .failed, .pending:
-                return partialResult + [message]
+                partialResult + [message]
             default:
-                return partialResult
+                partialResult
             }
         }
     }
@@ -58,9 +58,9 @@ final class MessagesManager: MessagesManagerProtocol {
         messages.first(where: {
             switch $0.type {
             case .agent, .systemMessageAgent, .user, .systemMessageUser:
-                return true
+                true
             default:
-                return false
+                false
             }
         })
     }

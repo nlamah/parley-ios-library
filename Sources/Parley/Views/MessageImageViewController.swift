@@ -10,7 +10,11 @@ final class MessageImageViewController: UIViewController {
     private let messageRepository: MessageRepositoryProtocol
     private let imageLoader: ImageLoaderProtocol
 
-    init(messageMediaIdentifier: String, messageRepository: MessageRepositoryProtocol, imageLoader: ImageLoaderProtocol) {
+    init(
+        messageMediaIdentifier: String,
+        messageRepository: MessageRepositoryProtocol,
+        imageLoader: ImageLoaderProtocol
+    ) {
         self.messageMediaIdentifier = messageMediaIdentifier
         self.messageRepository = messageRepository
         self.imageLoader = imageLoader

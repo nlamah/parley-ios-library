@@ -73,7 +73,7 @@ extension Message {
 
         // MARK: Accessibility Label - Ending
         static private func createAccessibilityMessageLabelEnding(_ message: Message) -> String {
-            return [
+            [
                 createStatusLabelIfNeeded(message),
                 createTimeLabelIfAvailable(message),
             ].compactMap { $0 }
@@ -83,11 +83,11 @@ extension Message {
         static private func createStatusLabelIfNeeded(_ message: Message) -> String? {
             switch message.status {
             case .failed:
-                return ParleyLocalizationKey.voiceOverMessageFailed.localized
+                ParleyLocalizationKey.voiceOverMessageFailed.localized
             case .pending:
-                return ParleyLocalizationKey.voiceOverMessagePending.localized
+                ParleyLocalizationKey.voiceOverMessagePending.localized
             case .success:
-                return nil
+                nil
             }
         }
 

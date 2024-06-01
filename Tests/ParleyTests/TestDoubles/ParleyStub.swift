@@ -1,7 +1,7 @@
 @testable import Parley
 
 final class ParleyStub: ParleyProtocol {
-    
+
     init(
         messagesManager: MessagesManagerProtocol,
         messageRepository: MessageRepositoryProtocol,
@@ -35,7 +35,7 @@ final class ParleyStub: ParleyProtocol {
     func userStartTyping() {}
     func loadMoreMessages(_ lastMessageId: Int) {}
     func sendNewMessageWithMedia(_ media: MediaModel) async {}
-    
+
     func setLocalizationManager(_ localizationManager: LocalizationManager) {
         self.localizationManager = localizationManager
     }

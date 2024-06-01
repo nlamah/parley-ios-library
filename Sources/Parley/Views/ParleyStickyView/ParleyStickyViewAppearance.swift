@@ -9,10 +9,10 @@ public class ParleyStickyViewAppearance {
 
     public var textViewAppearance: ParleyTextViewAppearance = {
         let appearance = ParleyTextViewAppearance()
-        
+
         appearance.textColor = UIColor(red:0.29, green:0.37, blue:0.51, alpha:1.0)
         appearance.linkTintColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.0)
-        
+
         appearance.regularFont = .systemFont(ofSize: 13)
         appearance.italicFont = .italicSystemFont(ofSize: 13)
         appearance.boldFont = .boldSystemFont(ofSize: 13)

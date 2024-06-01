@@ -51,8 +51,8 @@ final class PollingService: PollingServiceProtocol {
     func startRefreshing() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            self.setTimer(interval: .twoSeconds)
-            self.addObservers()
+            setTimer(interval: .twoSeconds)
+            addObservers()
         }
     }
 
@@ -122,9 +122,9 @@ final class PollingService: PollingServiceProtocol {
     private func willEnterForeground() {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            self.timer?.invalidate()
-            self.timer = nil
-            self.setTimer(interval: self.timerInterval)
+            timer?.invalidate()
+            timer = nil
+            setTimer(interval: timerInterval)
         }
     }
 

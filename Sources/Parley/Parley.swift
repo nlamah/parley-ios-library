@@ -224,12 +224,12 @@ public final class Parley: ParleyProtocol {
 
         let onFailure: (_ error: Error) -> () = { [weak self] error in
             guard let self else { return }
-            self.isLoading = false
+            isLoading = false
 
-            if self.isOfflineError(error) && self.isCachingEnabled() {
+            if isOfflineError(error) && isCachingEnabled() {
                 onSuccess?()
             } else {
-                self.state = .failed
+                state = .failed
 
                 onFailure?((error as NSError).code, error.getFormattedMessage())
             }
@@ -251,7 +251,7 @@ public final class Parley: ParleyProtocol {
                     onSuccess?()
                 }
 
-                if let lastMessage = self.messagesManager.lastSentMessage, let id = lastMessage.id {
+                if let lastMessage = messagesManager.lastSentMessage, let id = lastMessage.id {
                     messageRepository.findAfter(id, onSuccess: { [weak messagesManager] messageCollection in
                         messagesManager?.handle(messageCollection, .after)
 
@@ -297,9 +297,9 @@ public final class Parley: ParleyProtocol {
 
     private func isOfflineError(_ error: Error) -> Bool {
         if let httpError = error as? ParleyHTTPErrorResponse {
-            return httpError.isOfflineError
+            httpError.isOfflineError
         } else {
-            return isOfflineErrorCode((error as NSError).code)
+            isOfflineErrorCode((error as NSError).code)
         }
     }
 
@@ -522,7 +522,7 @@ public final class Parley: ParleyProtocol {
                 }
                 delegate?.didStopTyping()
 
-                let indexPaths = self.messagesManager.add(storedMessage)
+                let indexPaths = messagesManager.add(storedMessage)
                 delegate?.didReceiveMessage(indexPaths)
             }) { [weak self] _ in
                 guard let self else { return }
@@ -532,7 +532,7 @@ public final class Parley: ParleyProtocol {
                 }
                 delegate?.didStopTyping()
 
-                let indexPaths = self.messagesManager.add(message)
+                let indexPaths = messagesManager.add(message)
                 delegate?.didReceiveMessage(indexPaths)
             }
         } else {

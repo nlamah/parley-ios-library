@@ -195,7 +195,7 @@ public class ParleyView: UIView {
             let verticalInsets = messagesTableView.contentInset.top + messagesTableView.contentInset.bottom
             let newHeight = newContentHeight + verticalInsets
 
-            self.messagesTableViewHeightConstraint.constant = newHeight
+            messagesTableViewHeightConstraint.constant = newHeight
 
             let isScrollable = newContentHeight > messagesTableView.frame.maxY
             if isScrollable {
@@ -683,12 +683,11 @@ extension ParleyView: UITableViewDelegate {
         let contentHeight = messagesTableView.contentSize.height - messagesTableView.frame.size.height
 
         if messagesTableView.isAtBottom {
-            let bottomSpace: CGFloat
-            switch appearance.notificationsPosition {
+            let bottomSpace: CGFloat = switch appearance.notificationsPosition {
             case .top:
-                bottomSpace = 0
+                0
             case .bottom:
-                bottomSpace = getNotificationsHeight()
+                getNotificationsHeight()
             }
             let alpha = (scrollY - (contentHeight + bottomSpace)) / getSuggestionsHeight()
             suggestionsView.alpha = alpha

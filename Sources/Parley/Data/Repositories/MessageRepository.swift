@@ -20,7 +20,7 @@ protocol MessageRepositoryProtocol: AnyObject {
         onSuccess: @escaping (_ messageCollection: MessageCollection) -> (),
         onFailure: @escaping (_ error: Error) -> ()
     )
-    
+
     func store(_ message: Message) async throws -> Message
 }
 
