@@ -1,0 +1,74 @@
+only_rules:
+  - blanket_disable_command
+  - block_based_kvo
+  - closure_spacing
+  - colon
+  - comma
+  - compiler_protocol_init
+  - computed_accessors_order
+  - contains_over_first_not_nil
+  - closure_parameter_position
+  - class_delegate_protocol
+  - control_statement
+  - closing_brace
+  - discouraged_direct_init
+  - duplicate_conditions
+  - duplicate_enum_cases
+  - duplicated_key_in_dictionary_literal
+  - modifier_order
+  - deployment_target
+  - duplicate_imports
+  - empty_enum_arguments
+  - empty_collection_literal
+  - empty_parameters
+  - empty_xctest_method
+  - fatal_error_message
+  - force_cast
+  - force_try
+  - force_unwrapping
+  - file_name_no_space
+  - implicitly_unwrapped_optional
+  - invalid_swiftlint_command
+  - leading_whitespace
+  - legacy_cggeometry_functions
+  - legacy_hashing
+  - legacy_constant
+  - legacy_constructor
+  - legacy_nsgeometry_functions
+  - mark
+  - no_space_in_method_call
+  - operator_usage_whitespace
+  - redundant_string_enum_value
+  - redundant_void_return
+  - redundant_type_annotation
+  - return_arrow_whitespace
+  - redundant_objc_attribute
+  - trailing_newline
+  - trailing_whitespace
+  - type_name
+  - single_test_class
+  - private_unit_test
+  - trailing_semicolon
+  - unused_closure_parameter
+  - unused_control_flow_label
+  - unused_optional_binding
+  - unneeded_break_in_switch
+  - vertical_whitespace
+  - void_return
+  - custom_rules
+  - line_length
+  - weak_delegate
+  - xctfail_message
+
+modifier_order:
+  preferred_modifier_order: [acl, override, setterACL, dynamic, mutators, lazy, final, required, convenience, typeMethods, owned]
+
+analyzer_rules:
+  - unused_import
+  - unused_declaration
+
+line_length:
+  warning: 120
+  ignores_urls: true
+
+vertical_whitespace: 4

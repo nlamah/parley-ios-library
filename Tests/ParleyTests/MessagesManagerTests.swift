@@ -7,8 +7,8 @@ final class MessagesManagerTests: XCTestCase {
         let message: String
     }
 
-    private let MESSAGE_WELCOME_TEXT = "Welcome message";
-    private let MESSAGE_STICKY_TEXT = "Sticky message";
+    private let MESSAGE_WELCOME_TEXT = "Welcome message"
+    private let MESSAGE_STICKY_TEXT = "Sticky message"
 
     private var messagesManager: MessagesManager!
     private var messageDataSource: ParleyMessageDataSource!

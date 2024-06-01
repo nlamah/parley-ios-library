@@ -44,7 +44,7 @@ class ParleyCustomerAuthorization {
             customerAuthenticationKey,
             validUntillTimestampString,
             verifyHash,
-        ];
+        ]
         let authenticationEncodedData = authenticationEncodedDataArray.joined(separator: "|")
         let authenticationEncodedString = authenticationEncodedData.data(using: .utf8)!
         let userAuthentication = authenticationEncodedString.base64EncodedString(options: .endLineWithCarriageReturn)
