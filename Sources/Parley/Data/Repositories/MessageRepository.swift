@@ -2,23 +2,23 @@ import Foundation
 import UIKit
 
 protocol MessageRepositoryProtocol: AnyObject {
-    func find(_ id: Int, onSuccess: @escaping (_ message: Message) -> (), onFailure: @escaping (_ error: Error) -> ())
+    func find(_ id: Int, onSuccess: @escaping (_ message: Message) -> Void, onFailure: @escaping (_ error: Error) -> Void)
 
     func findAll(
-        onSuccess: @escaping (_ messageCollection: MessageCollection) -> (),
-        onFailure: @escaping (_ error: Error) -> ()
+        onSuccess: @escaping (_ messageCollection: MessageCollection) -> Void,
+        onFailure: @escaping (_ error: Error) -> Void
     )
 
     func findBefore(
         _ id: Int,
-        onSuccess: @escaping (_ messageCollection: MessageCollection) -> (),
-        onFailure: @escaping (_ error: Error) -> ()
+        onSuccess: @escaping (_ messageCollection: MessageCollection) -> Void,
+        onFailure: @escaping (_ error: Error) -> Void
     )
 
     func findAfter(
         _ id: Int,
-        onSuccess: @escaping (_ messageCollection: MessageCollection) -> (),
-        onFailure: @escaping (_ error: Error) -> ()
+        onSuccess: @escaping (_ messageCollection: MessageCollection) -> Void,
+        onFailure: @escaping (_ error: Error) -> Void
     )
 
     func store(_ message: Message) async throws -> Message

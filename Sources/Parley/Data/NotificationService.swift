@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 protocol NotificationServiceProtocol {
-    func notificationsEnabled(completion: @escaping ((Bool) -> ()))
+    func notificationsEnabled(completion: @escaping ((Bool) -> Void))
 }
 
 struct NotificationService: NotificationServiceProtocol {

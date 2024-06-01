@@ -1,25 +1,25 @@
 @testable import Parley
 
 final class MessageRepositoryStub: MessageRepositoryProtocol {
-    func find(_ id: Int, onSuccess: @escaping (Message) -> (), onFailure: @escaping (Error) -> ()) {
+    func find(_ id: Int, onSuccess: @escaping (Message) -> Void, onFailure: @escaping (Error) -> Void) {
         onSuccess(Message.makeTestData())
     }
 
-    func findAll(onSuccess: @escaping (MessageCollection) -> (), onFailure: @escaping (Error) -> ()) {
+    func findAll(onSuccess: @escaping (MessageCollection) -> Void, onFailure: @escaping (Error) -> Void) {
     }
 
     func findBefore(
         _ id: Int,
-        onSuccess: @escaping (MessageCollection) -> (),
-        onFailure: @escaping (Error) -> ()
+        onSuccess: @escaping (MessageCollection) -> Void,
+        onFailure: @escaping (Error) -> Void
     ) {
 
     }
 
     func findAfter(
         _ id: Int,
-        onSuccess: @escaping (MessageCollection) -> (),
-        onFailure: @escaping (Error) -> ()
+        onSuccess: @escaping (MessageCollection) -> Void,
+        onFailure: @escaping (Error) -> Void
     ) {
 
     }

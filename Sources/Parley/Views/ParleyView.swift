@@ -71,7 +71,7 @@ public class ParleyView: UIView {
     private var messagesManager: MessagesManagerProtocol {
         parley.messagesManager
     }
-    
+
     private static let maximumImageSizeInMegabytes = 10
 
     public var appearance = ParleyViewAppearance() {
@@ -90,10 +90,10 @@ public class ParleyView: UIView {
 
     public init() {
         super.init(frame: .zero)
-        
+
         setup()
     }
-    
+
     init(
         parley: ParleyProtocol,
         pollingService: PollingServiceProtocol,
