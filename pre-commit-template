@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Make sure the git/hooks folder exists
+# $ mkdir .git/hooks
+# Adjust the command below to hardcoded paths from the home folder
+# $ ln -s pre-commit-template .git/hooks/pre-commit
+# Make the file executable
+# $ chmod +x .git/hooks/pre-commit
+
+
+# Run SwiftLint
+swiftlint
+
+# Check the exit code of SwiftLint
+if [ $? -ne 0 ]; then
+    echo "SwiftLint failed. Commit aborted."
+    exit 1
+fi
