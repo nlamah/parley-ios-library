@@ -329,7 +329,7 @@ final class ParleyMessageViewTests: XCTestCase {
     }
 
     private func makeSut(imageLoader: ImageLoaderStub = ImageLoaderStub()) -> ParleyMessageView {
-        ParleyMessageView(frame: .zero, imageLoader: imageLoader)
+        ParleyMessageView(imageLoader: imageLoader)
     }
 
     private func addToContainer(sut: UIView, width: CGFloat = 320) -> UIView {

@@ -9,7 +9,7 @@ public enum ParleyLocalizationKey: String {
 
     // MARK: Notifications
     case pushDisabled = "parley_push_disabled"
-    case notificationOffline = "Check your internet connection"
+    case notificationOffline = "parley_notification_offline"
 
     // MARK: Photos
     case photo = "parley_photo"
@@ -58,7 +58,13 @@ public enum ParleyLocalizationKey: String {
 }
 
 extension ParleyLocalizationKey {
+    static var localizationManager: LocalizationManager = ParleyLocalizationManager()
+
+    static func resetToDefaultLocalizationManager() {
+        localizationManager = ParleyLocalizationManager()
+    }
+
     var localized: String {
-        Parley.shared.localizationManager.getLocalization(key: self)
+        Self.localizationManager.getLocalization(key: self)
     }
 }

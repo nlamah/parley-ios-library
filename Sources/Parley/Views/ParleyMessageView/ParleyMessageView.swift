@@ -107,7 +107,7 @@ final class ParleyMessageView: UIView {
     @IBOutlet private weak var buttonsBottomLayoutConstraint: NSLayoutConstraint!
 
     // Image
-    private let imageLoader: ImageLoaderProtocol
+    private lazy var imageLoader: ImageLoaderProtocol = Parley.shared.imageLoader
 
     // Helpers
     private var displayName: Display = .message
@@ -125,17 +125,15 @@ final class ParleyMessageView: UIView {
     private static let maximumImageWidth: CGFloat = 500
 
     // MARK: - View
-    init(frame: CGRect, imageLoader: ImageLoaderProtocol = Parley.shared.imageLoader) {
-        self.imageLoader = imageLoader
+    init(imageLoader: ImageLoaderProtocol) {
+        super.init(frame: .zero)
 
-        super.init(frame: frame)
+        self.imageLoader = imageLoader
 
         setup()
     }
 
     required init?(coder aDecoder: NSCoder) {
-        imageLoader = Parley.shared.imageLoader
-
         super.init(coder: aDecoder)
 
         setup()

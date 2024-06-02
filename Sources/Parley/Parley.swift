@@ -2,7 +2,27 @@ import Foundation
 import Reachability
 import UIKit
 
-public final class Parley {
+protocol ParleyProtocol {
+    var state: Parley.State { get }
+    var reachable: Bool { get }
+    var alwaysPolling: Bool { get }
+    var pushEnabled: Bool { get }
+
+    var messagesManager: MessagesManagerProtocol! { get }
+    var messageRepository: MessageRepositoryProtocol! { get }
+    var imageLoader: ImageLoaderProtocol! { get }
+
+    var delegate: ParleyDelegate? { get set }
+
+    func isCachingEnabled() -> Bool
+    func send(_ message: Message, isNewMessage: Bool) async
+    func send(_ text: String, silent: Bool)
+    func userStartTyping()
+    func loadMoreMessages(_ lastMessageId: Int)
+    func sendNewMessageWithMedia(_ media: MediaModel) async
+}
+
+public final class Parley: ParleyProtocol {
 
     enum State {
         case unconfigured
@@ -22,7 +42,7 @@ public final class Parley {
     private var isLoading = false
 
     private var reachability: Reachability?
-    private var reachable = false {
+    private(set) var reachable = false {
         didSet {
             if reachable {
                 delegate?.reachable()
@@ -41,14 +61,13 @@ public final class Parley {
     private(set) var networkConfig: ParleyNetworkConfig!
     private(set) var deviceRepository: DeviceRepository!
     private(set) var eventRemoteService: EventRemoteService!
-    private(set) var messageRepository: MessageRepository!
-    private(set) var messagesManager: MessagesManager!
+    private(set) var messageRepository: MessageRepositoryProtocol!
+    private(set) var messagesManager: MessagesManagerProtocol!
     private(set) var imageDataSource: ParleyImageDataSource?
     private(set) var imageRepository: ImageRepository!
-    private(set) var imageLoader: ImageLoader!
+    private(set) var imageLoader: ImageLoaderProtocol!
     private(set) var messageDataSource: ParleyMessageDataSource?
     private(set) var keyValueDataSource: ParleyKeyValueDataSource?
-    private(set) var localizationManager: LocalizationManager = ParleyLocalizationManager()
 
     private(set) var alwaysPolling = false
     private(set) var pushToken: String? = nil
@@ -60,19 +79,7 @@ public final class Parley {
     private(set) var userAuthorization: String?
     private(set) var userAdditionalInformation: [String: String]?
 
-    weak var delegate: ParleyDelegate? {
-        didSet {
-            if delegate == nil { return }
-
-            delegate?.didChangeState(state)
-
-            if reachable {
-                delegate?.reachable()
-            } else {
-                delegate?.unreachable()
-            }
-        }
-    }
+    weak var delegate: ParleyDelegate?
 
     private(set) var agentIsTyping = false
     private var agentStopTypingTimer: Timer?
@@ -788,7 +795,7 @@ extension Parley {
        - localizationManager: Manager to return localization string from a key.
      */
     public static func setLocalizationManager(_ localizationManager: LocalizationManager) {
-        shared.localizationManager = localizationManager
+        ParleyLocalizationKey.localizationManager = localizationManager
     }
 
     /**
