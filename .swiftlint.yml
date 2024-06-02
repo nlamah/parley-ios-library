@@ -15,8 +15,6 @@ only_rules:
   - duplicate_conditions
   - duplicate_enum_cases
   - duplicated_key_in_dictionary_literal
-  - modifier_order
-  - deployment_target
   - duplicate_imports
   - empty_enum_arguments
   - empty_collection_literal
@@ -35,28 +33,28 @@ only_rules:
   - legacy_constant
   - legacy_constructor
   - legacy_nsgeometry_functions
+  - line_length
   - mark
+  - modifier_order
   - no_space_in_method_call
   - operator_usage_whitespace
+  - private_unit_test
   - redundant_string_enum_value
   - redundant_void_return
   - redundant_type_annotation
   - return_arrow_whitespace
   - redundant_objc_attribute
+  - single_test_class
   - trailing_newline
+  - trailing_semicolon
   - trailing_whitespace
   - type_name
-  - single_test_class
-  - private_unit_test
-  - trailing_semicolon
   - unused_closure_parameter
   - unused_control_flow_label
   - unused_optional_binding
   - unneeded_break_in_switch
   - vertical_whitespace
   - void_return
-  - custom_rules
-  - line_length
   - weak_delegate
   - xctfail_message
 
@@ -69,6 +67,5 @@ analyzer_rules:
 
 line_length:
   warning: 120
-  ignores_urls: true
 
 vertical_whitespace: 4
