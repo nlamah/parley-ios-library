@@ -6,12 +6,14 @@ import XCTest
 final class ParleyViewTests: XCTestCase {
     private let secondsOfMinute = 60
 
+    private let stickyMessage = """
+                Due to high inquiry volumes, our response times may be longer than usual. We appreciate your patience and will get back to you as soon as possible. Thank you for your understanding.
+    """
+
     func testParleyView() {
         let messagesManagerStub = MessagesManagerStub()
 
-        messagesManagerStub
-            .stickyMessage =
-            "Due to high inquiry volumes, our response times may be longer than usual. We appreciate your patience and will get back to you as soon as possible. Thank you for your understanding."
+        messagesManagerStub.stickyMessage = stickyMessage
 
         messagesManagerStub.messages = [
             Message.makeTestData(time: Date(timeIntSince1970: 1), type: .date),
