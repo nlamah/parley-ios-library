@@ -4,11 +4,45 @@ import XCTest
 @testable import Parley
 
 final class ParleyViewTests: XCTestCase {
+    override class func setUp() {
+//        isRecording = true
+    }
+
     private let secondsOfMinute = 60
 
-    private let stickyMessage = """
-                Due to high inquiry volumes, our response times may be longer than usual. We appreciate your patience and will get back to you as soon as possible. Thank you for your understanding.
+    private let infoMessage = """
+    **Welcome!**
+    Want a quick answer to your question? Send your message directly. We can start directly as you are already identified. We are standing by for you every day between 8:00 and 22:00. You can safely close the app in the meantime, as you will receive a notification when we reply.
     """
+
+    private let stickyMessage = """
+    Due to high inquiry volumes, our response times may be longer than usual. We appreciate your patience and will get back to you as soon as possible. Thank you for your understanding.
+    """
+
+    func testEmptyParleyView() {
+        let messagesManagerStub = MessagesManagerStub()
+
+        messagesManagerStub.messages = [
+            Message.makeTestData(message: infoMessage, type: .info),
+        ]
+
+        let sut = ParleyView(
+            parley: ParleyStub(
+                messagesManager: messagesManagerStub,
+                messageRepository: MessageRepositoryStub(),
+                imageLoader: ImageLoaderStub(),
+                localizationManager: ParleyLocalizationManager()
+            ),
+            pollingService: PollingServiceStub(),
+            notificationService: NotificationServiceStub()
+        )
+
+        sut.appearance.info.textViewAppearance.paragraphStyle.alignment = .center
+
+        applySize(sut: sut)
+
+        assert(sut: sut)
+    }
 
     func testParleyView() {
         let messagesManagerStub = MessagesManagerStub()
@@ -16,6 +50,7 @@ final class ParleyViewTests: XCTestCase {
         messagesManagerStub.stickyMessage = stickyMessage
 
         messagesManagerStub.messages = [
+            Message.makeTestData(message: infoMessage, type: .info),
             Message.makeTestData(time: Date(timeIntSince1970: 1), type: .date),
             Message.makeTestData(
                 id: 1,
@@ -41,13 +76,7 @@ final class ParleyViewTests: XCTestCase {
                 status: .pending,
                 agent: nil
             ),
-            Message.makeTestData(
-                id: 3,
-                time: Date(timeIntSince1970: 3 * secondsOfMinute),
-                title: nil,
-                message: "Thank you for your prompt reply",
-                type: .agentTyping
-            ),
+            Message.makeTestData(type: .agentTyping),
         ]
 
         let sut = ParleyView(
@@ -60,6 +89,8 @@ final class ParleyViewTests: XCTestCase {
             pollingService: PollingServiceStub(),
             notificationService: NotificationServiceStub()
         )
+
+        sut.appearance.info.textViewAppearance.paragraphStyle.alignment = .center
 
         applySize(sut: sut)
 
