@@ -68,6 +68,7 @@ public final class Parley: ParleyProtocol {
     private(set) var imageLoader: ImageLoaderProtocol!
     private(set) var messageDataSource: ParleyMessageDataSource?
     private(set) var keyValueDataSource: ParleyKeyValueDataSource?
+    private(set) var localizationManager: LocalizationManager = ParleyLocalizationManager()
 
     private(set) var alwaysPolling = false
     private(set) var pushToken: String? = nil
@@ -795,7 +796,7 @@ extension Parley {
        - localizationManager: Manager to return localization string from a key.
      */
     public static func setLocalizationManager(_ localizationManager: LocalizationManager) {
-        ParleyLocalizationKey.localizationManager = localizationManager
+        shared.localizationManager = localizationManager
     }
 
     /**

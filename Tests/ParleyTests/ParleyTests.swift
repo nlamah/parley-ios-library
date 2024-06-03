@@ -13,7 +13,7 @@ final class ParleyTests: XCTestCase {
     override func tearDownWithError() throws {
         localizationManagerSpy = nil
 
-        ParleyLocalizationKey.resetToDefaultLocalizationManager()
+        Parley.setLocalizationManager(ParleyLocalizationManager())
     }
 
     func testSetLocalizationManager() {
@@ -22,8 +22,7 @@ final class ParleyTests: XCTestCase {
         XCTAssertNotEqual(ParleyLocalizationKey.cancel.localized, ParleyLocalizationKey.cancel.rawValue)
         XCTAssertEqual(localizationManagerSpy.getLocalizationKeyCallsCount, 0)
 
-        ParleyLocalizationKey.localizationManager = localizationManagerSpy
-
+        Parley.setLocalizationManager(localizationManagerSpy)
         localizationManagerSpy.getLocalizationKeyReturnValue = localizationKeyReturnValue
 
         XCTAssertEqual(ParleyLocalizationKey.cancel.localized, localizationKeyReturnValue)

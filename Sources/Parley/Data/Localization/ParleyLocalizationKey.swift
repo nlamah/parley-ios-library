@@ -56,15 +56,3 @@ public enum ParleyLocalizationKey: String {
     case voiceOverAnnouncementInfoMessageReceived = "parley_voice_over_announcement_info_message_received"
     case voiceOverAnnouncementQuickRepliesReceived = "parley_voice_over_announcement_quick_replies_received"
 }
-
-extension ParleyLocalizationKey {
-    static var localizationManager: LocalizationManager = ParleyLocalizationManager()
-
-    static func resetToDefaultLocalizationManager() {
-        localizationManager = ParleyLocalizationManager()
-    }
-
-    var localized: String {
-        Self.localizationManager.getLocalization(key: self)
-    }
-}
