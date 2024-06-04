@@ -367,9 +367,11 @@ public final class Parley: ParleyProtocol {
     // MARK: Messages
 
     func loadMoreMessages(_ lastMessageId: Int) {
-        guard self.reachable,
-              !self.isLoading,
-              self.messagesManager.canLoadMore() else {
+        guard
+            reachable,
+            !isLoading,
+            messagesManager.canLoadMore() else
+        {
             return
         }
 

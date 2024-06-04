@@ -32,9 +32,15 @@ final class MessageTableViewCell: UITableViewCell {
 
     var appearance: MessageTableViewCellAppearance? {
         didSet {
-            guard let appearance = appearance else { return }
+            guard let appearance else { return }
 
             apply(appearance)
+        }
+    }
+
+    var imageLoader: ImageLoaderProtocol? {
+        didSet {
+            parleyMessageView.imageLoader = imageLoader
         }
     }
 
@@ -148,6 +154,7 @@ extension MessageTableViewCell: UICollectionViewDataSource {
 
         messageCollectionViewCell.delegate = delegate
         messageCollectionViewCell.appearance = appearance?.carousel
+        messageCollectionViewCell.imageLoader = imageLoader
 
         if let messages {
             messageCollectionViewCell.render(messages.messages[indexPath.row], time: messages.time)

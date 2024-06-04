@@ -457,10 +457,10 @@ extension ParleyView: ParleyDelegate {
 
     func didReceiveMessages() {
         syncSuggestionsView()
-        
+
         messagesTableView.reloadData()
     }
-    
+
     func didLoadMore() {
         let firstVisible = messagesTableView.indexPathsForVisibleRows?.first?.row
         let fromCount = messagesTableView.numberOfRows(inSection: 0)
@@ -631,6 +631,7 @@ extension ParleyView: UITableViewDataSource {
                 .dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier) as! MessageTableViewCell
             messageTableViewCell.delegate = self
             messageTableViewCell.appearance = appearance.userMessage
+            messageTableViewCell.imageLoader = parley.imageLoader
             messageTableViewCell.render(message)
 
             return messageTableViewCell

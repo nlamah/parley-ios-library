@@ -107,7 +107,7 @@ final class ParleyMessageView: UIView {
     @IBOutlet private weak var buttonsBottomLayoutConstraint: NSLayoutConstraint!
 
     // Image
-    private lazy var imageLoader: ImageLoaderProtocol = Parley.shared.imageLoader
+    var imageLoader: ImageLoaderProtocol?
 
     // Helpers
     private var displayName: Display = .message
@@ -356,6 +356,11 @@ final class ParleyMessageView: UIView {
     }
 
     private func loadImage(id: String) {
+        guard let imageLoader else {
+            displayFailedLoadingImage()
+            return
+        }
+
         let imageRequestForMessageId = message.id
         Task {
             do {
@@ -387,7 +392,8 @@ final class ParleyMessageView: UIView {
 
     // Gradient
     private func renderGradients() {
-        // Async to render gradients on next frame, else scrolling images that are loading might not get the correct gradient applied.
+        // Async to render gradients on next frame, else scrolling images that are loading might not get the correct
+        // gradient applied.
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             imageImageView.layer.sublayers?.forEach { $0.removeFromSuperlayer() }

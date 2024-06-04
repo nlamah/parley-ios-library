@@ -14,9 +14,15 @@ final class MessageCollectionViewCell: UICollectionViewCell {
 
     var appearance: MessageCollectionViewCellAppearance? {
         didSet {
-            guard let appearance = appearance else { return }
+            guard let appearance else { return }
 
             apply(appearance)
+        }
+    }
+
+    var imageLoader: ImageLoaderProtocol? {
+        didSet {
+            parleyMessageView.imageLoader = imageLoader
         }
     }
 

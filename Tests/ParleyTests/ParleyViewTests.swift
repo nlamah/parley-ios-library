@@ -97,6 +97,46 @@ final class ParleyViewTests: XCTestCase {
         assert(sut: sut)
     }
 
+    func testMessageWithImage() throws {
+        let messagesManagerStub = MessagesManagerStub()
+
+        messagesManagerStub.messages = [
+            Message.makeTestData(time: Date(timeIntSince1970: 1), type: .date),
+            Message.makeTestData(
+                id: 1,
+                time: Date(timeIntSince1970: 1),
+                title: nil,
+                message: "This is my question.",
+                media: MediaObject(id: "mediaObject"),
+                type: .user,
+                agent: nil
+            ),
+        ]
+
+        let imageLoaderStub = ImageLoaderStub()
+        let image = try XCTUnwrap(UIImage(named: "Parley", in: .module, compatibleWith: nil))
+        let data = try XCTUnwrap(image.pngData())
+        let model = try XCTUnwrap(ImageDisplayModel(data: data, type: .png))
+        imageLoaderStub.loadResult = model
+
+        let sut = ParleyView(
+            parley: ParleyStub(
+                messagesManager: messagesManagerStub,
+                messageRepository: MessageRepositoryStub(),
+                imageLoader: imageLoaderStub,
+                localizationManager: ParleyLocalizationManager()
+            ),
+            pollingService: PollingServiceStub(),
+            notificationService: NotificationServiceStub()
+        )
+
+        wait()
+
+        applySize(sut: sut)
+
+        assert(sut: sut)
+    }
+
     func testOfflineView() {
         let messagesManagerStub = MessagesManagerStub()
 
@@ -180,6 +220,12 @@ final class ParleyViewTests: XCTestCase {
         testName: String = #function,
         line: UInt = #line
     ) {
-        assertSnapshot(matching: sut, as: .image(traits: traits), file: file, testName: testName, line: line)
+        assertSnapshot(
+            matching: sut,
+            as: .image(traits: traits),
+            file: file,
+            testName: testName,
+            line: line
+        )
     }
 }
