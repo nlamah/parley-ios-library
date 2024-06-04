@@ -1,6 +1,6 @@
 import Foundation
 
-protocol ImageLoaderProtocol: AnyObject {
+protocol ImageLoaderProtocol {
     func load(id: String) async throws -> ImageDisplayModel
     func reset() async
 }
