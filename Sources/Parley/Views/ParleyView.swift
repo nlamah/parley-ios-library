@@ -131,14 +131,6 @@ public class ParleyView: UIView {
 
         parley.delegate = self
 
-        didChangeState(parley.state)
-
-        if parley.reachable {
-            reachable()
-        } else {
-            unreachable()
-        }
-
         setupPollingIfNecessary()
 
         observeNotificationsBounds = notificationsStackView.observe(\.bounds) { [weak self] _, _ in

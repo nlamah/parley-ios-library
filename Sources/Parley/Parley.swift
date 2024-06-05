@@ -80,7 +80,19 @@ public final class Parley: ParleyProtocol {
     private(set) var userAuthorization: String?
     private(set) var userAdditionalInformation: [String: String]?
 
-    weak var delegate: ParleyDelegate?
+    weak var delegate: ParleyDelegate? {
+        didSet {
+            guard let delegate else { return }
+
+            delegate.didChangeState(state)
+
+            if reachable {
+                delegate.reachable()
+            } else {
+                delegate.unreachable()
+            }
+        }
+    }
 
     private(set) var agentIsTyping = false
     private var agentStopTypingTimer: Timer?
