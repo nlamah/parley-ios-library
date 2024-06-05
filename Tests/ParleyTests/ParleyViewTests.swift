@@ -137,6 +137,65 @@ final class ParleyViewTests: XCTestCase {
         assert(sut: sut)
     }
 
+    func testMessageWithCarousel() throws {
+        let messagesManagerStub = MessagesManagerStub()
+
+        messagesManagerStub.messages = [
+            Message.makeTestData(time: Date(timeIntSince1970: 1), type: .date),
+            Message.makeTestData(
+                id: 1,
+                time: Date(timeIntSince1970: 1),
+                title: nil,
+                message: "This is my question.",
+                carousel: [
+                    Message.makeTestData(
+                        id: 2,
+                        time: Date(timeIntSince1970: 2),
+                        title: nil,
+                        message: "Carousel 1",
+                        media: MediaObject(id: "id"),
+                        type: .user,
+                        agent: nil
+                    ),
+                    Message.makeTestData(
+                        id: 3,
+                        time: Date(timeIntSince1970: 4),
+                        title: nil,
+                        message: "Carousel 2",
+                        type: .user,
+                        agent: nil
+                    ),
+                ],
+                type: .user,
+                agent: nil
+            ),
+            Message.makeTestData(type: .agentTyping),
+        ]
+
+        let imageLoaderStub = ImageLoaderStub()
+        let image = try XCTUnwrap(UIImage(named: "Parley", in: .module, compatibleWith: nil))
+        let data = try XCTUnwrap(image.pngData())
+        let model = try XCTUnwrap(ImageDisplayModel(data: data, type: .png))
+        imageLoaderStub.loadResult = model
+
+        let sut = ParleyView(
+            parley: ParleyStub(
+                messagesManager: messagesManagerStub,
+                messageRepository: MessageRepositoryStub(),
+                imageLoader: imageLoaderStub,
+                localizationManager: ParleyLocalizationManager()
+            ),
+            pollingService: PollingServiceStub(),
+            notificationService: NotificationServiceStub()
+        )
+
+        wait()
+
+        applySize(sut: sut)
+
+        assert(sut: sut)
+    }
+
     func testOfflineView() {
         let messagesManagerStub = MessagesManagerStub()
 
