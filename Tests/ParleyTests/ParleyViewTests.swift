@@ -37,6 +37,8 @@ final class ParleyViewTests: XCTestCase {
             notificationService: NotificationServiceStub()
         )
 
+        sut.reachable()
+        sut.didChangeState(.configured)
         sut.appearance.info.textViewAppearance.paragraphStyle.alignment = .center
 
         applySize(sut: sut)
@@ -90,6 +92,8 @@ final class ParleyViewTests: XCTestCase {
             notificationService: NotificationServiceStub()
         )
 
+        sut.reachable()
+        sut.didChangeState(.configured)
         sut.appearance.info.textViewAppearance.paragraphStyle.alignment = .center
 
         applySize(sut: sut)
@@ -129,6 +133,9 @@ final class ParleyViewTests: XCTestCase {
             pollingService: PollingServiceStub(),
             notificationService: NotificationServiceStub()
         )
+
+        sut.reachable()
+        sut.didChangeState(.configured)
 
         wait()
 
@@ -189,6 +196,9 @@ final class ParleyViewTests: XCTestCase {
             notificationService: NotificationServiceStub()
         )
 
+        sut.reachable()
+        sut.didChangeState(.configured)
+
         wait()
 
         applySize(sut: sut)
@@ -226,6 +236,9 @@ final class ParleyViewTests: XCTestCase {
             notificationService: NotificationServiceStub()
         )
 
+        sut.unreachable()
+        sut.didChangeState(.configured)
+
         applySize(sut: sut)
 
         assert(sut: sut)
@@ -260,6 +273,143 @@ final class ParleyViewTests: XCTestCase {
             pollingService: PollingServiceStub(),
             notificationService: NotificationServiceStub()
         )
+
+        sut.reachable()
+        sut.didChangeState(.configured)
+
+        applySize(sut: sut)
+
+        assert(sut: sut)
+    }
+
+    func testUnConfiguredState() {
+        let messagesManagerStub = MessagesManagerStub()
+
+        messagesManagerStub.messages = [
+            Message.makeTestData(time: Date(timeIntSince1970: 1), type: .date),
+            Message.makeTestData(
+                id: 1,
+                time: Date(timeIntSince1970: 1),
+                title: nil,
+                message: "This is my question.",
+                type: .user,
+                agent: nil
+            ),
+        ]
+
+        let parleyStub = ParleyStub(
+            messagesManager: messagesManagerStub,
+            messageRepository: MessageRepositoryStub(),
+            imageLoader: ImageLoaderStub(),
+            localizationManager: ParleyLocalizationManager()
+        )
+
+        let sut = ParleyView(
+            parley: parleyStub,
+            pollingService: PollingServiceStub(),
+            notificationService: NotificationServiceStub()
+        )
+
+        sut.reachable()
+        sut.didChangeState(.unconfigured)
+
+        applySize(sut: sut)
+
+        assert(sut: sut)
+    }
+
+    func testConfiguringState() {
+        let messagesManagerStub = MessagesManagerStub()
+
+        messagesManagerStub.messages = [
+            Message.makeTestData(time: Date(timeIntSince1970: 1), type: .date),
+            Message.makeTestData(
+                id: 1,
+                time: Date(timeIntSince1970: 1),
+                title: nil,
+                message: "This is my question.",
+                type: .user,
+                agent: nil
+            ),
+        ]
+
+        let parleyStub = ParleyStub(
+            messagesManager: messagesManagerStub,
+            messageRepository: MessageRepositoryStub(),
+            imageLoader: ImageLoaderStub(),
+            localizationManager: ParleyLocalizationManager()
+        )
+
+        let sut = ParleyView(
+            parley: parleyStub,
+            pollingService: PollingServiceStub(),
+            notificationService: NotificationServiceStub()
+        )
+
+        sut.reachable()
+        sut.didChangeState(.configuring)
+
+        applySize(sut: sut)
+
+        assert(sut: sut)
+    }
+
+    func testFailedState() {
+        let messagesManagerStub = MessagesManagerStub()
+
+        messagesManagerStub.messages = [
+            Message.makeTestData(time: Date(timeIntSince1970: 1), type: .date),
+            Message.makeTestData(
+                id: 1,
+                time: Date(timeIntSince1970: 1),
+                title: nil,
+                message: "This is my question.",
+                type: .user,
+                agent: nil
+            ),
+        ]
+
+        let parleyStub = ParleyStub(
+            messagesManager: messagesManagerStub,
+            messageRepository: MessageRepositoryStub(),
+            imageLoader: ImageLoaderStub(),
+            localizationManager: ParleyLocalizationManager()
+        )
+
+        let sut = ParleyView(
+            parley: parleyStub,
+            pollingService: PollingServiceStub(),
+            notificationService: NotificationServiceStub()
+        )
+
+        sut.reachable()
+        sut.didChangeState(.failed)
+
+        applySize(sut: sut)
+
+        assert(sut: sut)
+    }
+
+    func testConfiguredStateWithNoMessages() {
+        let messagesManagerStub = MessagesManagerStub()
+
+        messagesManagerStub.messages = []
+
+        let parleyStub = ParleyStub(
+            messagesManager: messagesManagerStub,
+            messageRepository: MessageRepositoryStub(),
+            imageLoader: ImageLoaderStub(),
+            localizationManager: ParleyLocalizationManager()
+        )
+
+        let sut = ParleyView(
+            parley: parleyStub,
+            pollingService: PollingServiceStub(),
+            notificationService: NotificationServiceStub()
+        )
+
+        sut.reachable()
+        sut.didChangeState(.configured)
 
         applySize(sut: sut)
 
