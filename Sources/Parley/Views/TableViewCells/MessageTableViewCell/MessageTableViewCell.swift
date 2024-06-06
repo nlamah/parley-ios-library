@@ -38,25 +38,21 @@ final class MessageTableViewCell: UITableViewCell {
         }
     }
 
-    var imageLoader: ImageLoaderProtocol? {
-        didSet {
-            parleyMessageView.imageLoader = imageLoader
-        }
-    }
-
     private var messages: (messages: [Message], time: Date?)?
+    private var imageLoader: ImageLoaderProtocol?
 
-    func render(_ message: Message) {
+    func render(_ message: Message, imageLoader: ImageLoaderProtocol?) {
         if message.hasMedium || message.title != nil || message.message != nil || message.hasButtons {
             messageView.isHidden = false
 
-            parleyMessageView.set(message: message, forcedTime: nil)
+            parleyMessageView.set(message: message, forcedTime: nil, imageLoader: imageLoader)
         } else {
             messageView.isHidden = true
         }
 
         if let messages = message.carousel, !messages.isEmpty {
             self.messages = (messages, message.time)
+            self.imageLoader = imageLoader
 
             collectionView.isHidden = false
 
@@ -154,10 +150,13 @@ extension MessageTableViewCell: UICollectionViewDataSource {
 
         messageCollectionViewCell.delegate = delegate
         messageCollectionViewCell.appearance = appearance?.carousel
-        messageCollectionViewCell.imageLoader = imageLoader
 
         if let messages {
-            messageCollectionViewCell.render(messages.messages[indexPath.row], time: messages.time)
+            messageCollectionViewCell.render(
+                messages.messages[indexPath.row],
+                time: messages.time,
+                imageLoader: imageLoader
+            )
         }
 
         return messageCollectionViewCell

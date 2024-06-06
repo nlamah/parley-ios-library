@@ -592,7 +592,7 @@ extension ParleyView: UITableViewDataSource {
                 .dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier) as! MessageTableViewCell
             messageTableViewCell.delegate = self
             messageTableViewCell.appearance = appearance.agentMessage
-            messageTableViewCell.render(message)
+            messageTableViewCell.render(message, imageLoader: parley.imageLoader)
 
             return messageTableViewCell
         case .date?:
@@ -629,8 +629,7 @@ extension ParleyView: UITableViewDataSource {
                 .dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier) as! MessageTableViewCell
             messageTableViewCell.delegate = self
             messageTableViewCell.appearance = appearance.userMessage
-            messageTableViewCell.imageLoader = parley.imageLoader
-            messageTableViewCell.render(message)
+            messageTableViewCell.render(message, imageLoader: parley.imageLoader)
 
             return messageTableViewCell
         default:
