@@ -341,7 +341,7 @@ final class ParleyMessageViewTests: XCTestCase {
             traits: UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge)
         )
     }
-    
+
     private func addToContainer(sut: UIView, width: CGFloat = 320) -> UIView {
         let container = UIView()
         container.addSubview(sut)
