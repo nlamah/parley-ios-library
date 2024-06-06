@@ -37,7 +37,7 @@ final class MessagesManager: MessagesManagerProtocol {
 
     /// The last messages that has been successfully sent.
     var lastSentMessage: Message? {
-        originalMessages.first { message in
+        originalMessages.last { message in
             message.id != nil && message.status == .success
         }
     }
@@ -77,7 +77,11 @@ final class MessagesManager: MessagesManagerProtocol {
         originalMessages.removeAll(keepingCapacity: true)
 
         if let cachedMessages = messageDataSource?.all() {
-            originalMessages.append(contentsOf: cachedMessages.sorted(by: <))
+            originalMessages
+                .append(
+                    contentsOf: cachedMessages
+                        .sorted(by: <)
+                ) // When receiving them from cached, they could be sorted differently
         }
 
         stickyMessage = nil
@@ -98,7 +102,7 @@ final class MessagesManager: MessagesManagerProtocol {
                 return false
             }
             return true
-        }
+        }.sorted(by: <) // By default backend sorts them the other way around (initial retrieval and findAfter)
 
         switch handleType {
         case .before:
