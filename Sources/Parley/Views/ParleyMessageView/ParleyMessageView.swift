@@ -356,6 +356,7 @@ final class ParleyMessageView: UIView {
 
     private func loadImage(id: String) {
         guard let imageLoader else {
+            assertionFailure("An ImageLoader is expected")
             displayFailedLoadingImage()
             return
         }

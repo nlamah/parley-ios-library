@@ -88,8 +88,8 @@ public class ParleyView: UIView {
 
     public weak var delegate: ParleyViewDelegate?
 
-    public init() {
-        super.init(frame: .zero)
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
 
         setup()
     }

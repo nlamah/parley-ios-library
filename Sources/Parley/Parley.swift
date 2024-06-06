@@ -4,7 +4,6 @@ import UIKit
 
 protocol ParleyProtocol {
     var state: Parley.State { get }
-    var reachable: Bool { get }
     var alwaysPolling: Bool { get }
     var pushEnabled: Bool { get }
 
@@ -42,7 +41,7 @@ public final class Parley: ParleyProtocol {
     private var isLoading = false
 
     private var reachability: Reachability?
-    private(set) var reachable = false {
+    private var reachable = false {
         didSet {
             if reachable {
                 delegate?.reachable()
