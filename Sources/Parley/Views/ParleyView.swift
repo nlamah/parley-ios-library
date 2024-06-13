@@ -119,7 +119,20 @@ public class ParleyView: UIView {
         }
     }
 
+    private var didSetupPollingSerivce = false
+    
     private func setupPollingIfNecessary() {
+        guard didSetupPollingSerivce == false else {
+            return
+        }
+        
+        switch Parley.shared.state {
+        case .unconfigured:
+            return
+        case .configuring, .configured, .failed:
+            didSetupPollingSerivce = true
+        }
+        
         pollingService.delegate = self
 
         if Parley.shared.alwaysPolling {
@@ -471,6 +484,8 @@ extension ParleyView: ParleyDelegate {
     func didChangeState(_ state: Parley.State) {
         debugPrint("ParleyViewDelegate.didChangeState:: \(state)")
 
+        setupPollingIfNecessary()
+        
         switch state {
         case .unconfigured:
             messagesTableView.reloadData()
@@ -562,7 +577,12 @@ extension ParleyView: ParleyDelegate {
 extension ParleyView: UITableViewDataSource {
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        getMessagesManager().messages.count
+        switch Parley.shared.state {
+        case .unconfigured:
+            return 0
+        case .configured, .configuring, .failed:
+            return getMessagesManager().messages.count
+        }
     }
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -661,15 +681,22 @@ extension ParleyView: UITableViewDataSource {
 extension ParleyView: UITableViewDelegate {
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let oldestMessageId: Int?
+
+        switch Parley.shared.state {
+        case .unconfigured:
+            oldestMessageId = nil
+        case .configured, .configuring, .failed:
+            oldestMessageId = getMessagesManager().getOldestMessage()?.id
+        }
+
         messagesTableView.scrollViewDidScroll()
 
         let height = scrollView.frame.height
         let scrollY = scrollView.contentOffset.y
 
         if scrollY < height / 2 {
-            guard
-                !isAlreadyAtTop,
-                let lastMessageId = getMessagesManager().getOldestMessage()?.id else { return }
+            guard !isAlreadyAtTop, let lastMessageId = oldestMessageId else { return }
 
             isAlreadyAtTop = true
             Parley.shared.loadMoreMessages(lastMessageId)
