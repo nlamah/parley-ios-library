@@ -244,6 +244,7 @@ class IdentifierViewController: UIViewController {
 
     // Start anonymous chat
     private func startChat(secret: String) {
+        performSegue(withIdentifier: "showTabBarViewController", sender: nil)
         startButton.setLoading(true)
 
         if UserDefaults.standard.string(forKey: kUserDefaultIdentifierCustomerIdentification) != nil {
@@ -259,8 +260,6 @@ class IdentifierViewController: UIViewController {
 
                 UserDefaults.standard.set(secret, forKey: kUserDefaultIdentificationCode)
                 UserDefaults.standard.removeObject(forKey: kUserDefaultIdentifierCustomerIdentification)
-
-                self?.performSegue(withIdentifier: "showTabBarViewController", sender: nil)
             }
         ) { [weak self] code, message in
             self?.startButton.setLoading(false)
