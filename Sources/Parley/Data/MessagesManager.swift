@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 protocol MessagesManagerProtocol: AnyObject {
+    var uuid: UUID { get }
     var messages: [Message] { get }
     var pendingMessages: [Message] { get }
     var lastSentMessage: Message? { get }
@@ -35,6 +36,8 @@ final class MessagesManager: MessagesManagerProtocol {
     private weak var messageDataSource: ParleyMessageDataSource?
     private weak var keyValueDataSource: ParleyKeyValueDataSource?
 
+    let uuid = UUID()
+    
     /// The last messages that has been successfully sent.
     var lastSentMessage: Message? {
         originalMessages.last { message in

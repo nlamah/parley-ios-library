@@ -429,7 +429,10 @@ public class ParleyView: UIView {
 
 // MARK: ParleyDelegate
 extension ParleyView: ParleyDelegate {
-
+    func refreshedMessagesManager(with uuid: UUID?) {
+        assert(uuid == messagesManager?.uuid)
+    }
+    
     func willSend(_ indexPaths: [IndexPath]) {
         syncSuggestionsView()
 

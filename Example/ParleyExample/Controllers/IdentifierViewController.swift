@@ -6,7 +6,7 @@ import UIKit
 class IdentifierViewController: UIViewController {
 
     /// Disable offline messaging in the demo app to show error messages as an alert before opening the chat
-    private static let kOfflineMessagingEnabled = true
+    private static let kOfflineMessagingEnabled = false
 
     @IBOutlet weak var titleLabel: UILabel! {
         didSet {
@@ -165,16 +165,7 @@ class IdentifierViewController: UIViewController {
 
     @IBAction
     func startChatClicked(_ sender: Any) {
-        if alreadyConfiguredParley {
-            // Only in the demo we'll need to reset Parley when we've already configured it once
-            Parley.reset(onSuccess: { [weak self] in
-                self?.startChatDemo()
-            }, onFailure: { _, _ in
-                print("Failed to reset Parley")
-            })
-        } else {
-            startChatDemo()
-        }
+        startChatDemo()
     }
 
     // Start a chat based on the input
@@ -246,35 +237,37 @@ class IdentifierViewController: UIViewController {
     private func startChat(secret: String) {
         startButton.setLoading(true)
 
+        performSegue(withIdentifier: "showTabBarViewController", sender: nil)
+
         if UserDefaults.standard.string(forKey: kUserDefaultIdentifierCustomerIdentification) != nil {
             Parley.clearUserInformation()
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            Parley.setAlwaysPolling(true)
+            Parley.configure(
+                secret,
+                networkConfig: self.createNetworkConfig(),
+                onSuccess: { [weak self] in
+                    self?.alreadyConfiguredParley = true
+                    self?.startButton.setLoading(false)
 
-        Parley.configure(
-            secret,
-            networkConfig: createNetworkConfig(),
-            onSuccess: { [weak self] in
-                self?.alreadyConfiguredParley = true
+                    UserDefaults.standard.set(secret, forKey: kUserDefaultIdentificationCode)
+                    UserDefaults.standard.removeObject(forKey: kUserDefaultIdentifierCustomerIdentification)
+                }
+            ) { [weak self] code, message in
                 self?.startButton.setLoading(false)
-
-                UserDefaults.standard.set(secret, forKey: kUserDefaultIdentificationCode)
-                UserDefaults.standard.removeObject(forKey: kUserDefaultIdentifierCustomerIdentification)
-
-                self?.performSegue(withIdentifier: "showTabBarViewController", sender: nil)
-            }
-        ) { [weak self] code, message in
-            self?.startButton.setLoading(false)
-            if Self.kOfflineMessagingEnabled {
-                self?.performSegue(withIdentifier: "showTabBarViewController", sender: nil)
-            } else {
-                self?.showAlert(
-                    title: NSLocalizedString("identifier_error_start_title", comment: ""),
-                    message: String(
-                        format: NSLocalizedString("identifier_error_start_body", comment: ""),
-                        message,
-                        "\(code)"
+                if Self.kOfflineMessagingEnabled {
+                    self?.performSegue(withIdentifier: "showTabBarViewController", sender: nil)
+                } else {
+                    self?.showAlert(
+                        title: NSLocalizedString("identifier_error_start_title", comment: ""),
+                        message: String(
+                            format: NSLocalizedString("identifier_error_start_body", comment: ""),
+                            message,
+                            "\(code)"
+                        )
                     )
-                )
+                }
             }
         }
     }

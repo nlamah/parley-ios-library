@@ -18,4 +18,6 @@ protocol ParleyDelegate: AnyObject {
 
     func reachable()
     func unreachable()
+    
+    func refreshedMessagesManager(with uuid: UUID?)
 }

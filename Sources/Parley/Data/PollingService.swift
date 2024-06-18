@@ -83,6 +83,8 @@ final class PollingService: PollingServiceProtocol {
         messageRepository.findAfter(
             id,
             onSuccess: { [weak self, weak delegate, weak messagesManager] messageCollection in
+                delegate?.refreshedMessagesManager(with: messagesManager?.uuid)
+                
                 guard !messageCollection.messages.isEmpty else {
                     self?.loopRepeated += 1
                     return
